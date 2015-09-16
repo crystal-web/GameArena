@@ -1,5 +1,5 @@
 name: GameManager
-main: me.devphp.gm.Core
+main: me.devphp.ga.Core
 authors: [Devphp]
 version: 1.0.0.0
 commands:

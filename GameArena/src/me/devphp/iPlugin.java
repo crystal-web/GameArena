@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * Interface pour tous plugin afin de résoudre les problème de compatibilité
+ * Interface pour tous plugin afin de résoudre les problème de compatibilités
  * @author Devphp
  *
  */

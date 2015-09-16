@@ -22,7 +22,7 @@ import me.devphp.iPlugin;
 
 /**
  *
- * @author Administrator
+ * @author Devphp
  */
 public class TeamManager {
 	private iPlugin plugin;
@@ -201,7 +201,7 @@ public class TeamManager {
 	 * @param sendPlayer
 	 * @param message
 	 */
-	public void chatInParty(String sendPlayer, String message) {
+	public void chatInTeam(String sendPlayer, String message) {
 		sendPlayer = sendPlayer.toLowerCase();
 		Player player = Bukkit.getPlayer(sendPlayer);
 		if (player == null || !player.isOnline()) {
