@@ -47,8 +47,7 @@ public class TeamManager {
 		this.teams			= new HashMap<String, Team>();
 		this.playersTeam	= new HashMap<String, String>();
 		
-		
-		this.maxTeamSize = 4;
+		this.maxTeamSize	= 4;
 		
 		// TODO A tester
 		this.plugin
@@ -58,11 +57,14 @@ public class TeamManager {
 			.registerEvents(new PlayerListener(this), (Plugin) this.plugin);
 	}
 	
+	
 	public void defineSpawn(String team, Location location) {
 		// TODO Auto-generated method stub
-		
 	}
 
+	/**
+	 * Propriété
+	 */
 	
 	/**
 	 * retourne la taille maximal d'une equipe
@@ -80,6 +82,26 @@ public class TeamManager {
 		this.maxTeamSize = size;
 	}
 	
+	
+	/**
+	 * Team
+	 */
+	
+	/**
+	 * Retire toute les équipes
+	 */
+	public void disbandAllTeams() {
+		for (int i = 0; i < teams.size(); i++) {
+			Iterator<Team> pit = teams.values().iterator();
+			while (pit.hasNext()) {
+				Team next = pit.next();
+				next.removeAllFromTeam();
+				pit.remove();
+			}
+		}
+		teams.clear();
+	}
+	
 	/**
 	 * Creation d'une équipe
 	 * @param teamName
@@ -93,6 +115,16 @@ public class TeamManager {
 		}
 		this.teams.put(teamName, new Team(teamName));
 		this.gameEvent.teamCreatedEvent(teamName);
+	}
+	
+	/**
+	 * La team existe ?
+	 * @param teamName
+	 * @return boolean
+	 */
+	public boolean teamExists(String teamName) {
+		teamName = teamName.toLowerCase();
+		return teams.containsKey(teamName);
 	}
 	
 	/**
@@ -112,17 +144,6 @@ public class TeamManager {
 	}
 	
 	/**
-	 * La team existe ?
-	 * @param teamName
-	 * @return boolean
-	 */
-	public boolean teamExists(String teamName) {
-		teamName = teamName.toLowerCase();
-		
-		return teams.containsKey(teamName);
-	}
-	
-	/**
 	 * retourne l'objet team de la team aillant le nom teamName ou null si elle n'existe pas
 	 * @param teamName
 	 * @return Team
@@ -135,33 +156,7 @@ public class TeamManager {
 		}
 		return null;
 	}
-
-	/**
-	 * savoir si un joueur est dans une équipe
-	 * @param playerName
-	 * @return boolean
-	 */
-	public boolean isPlayerInTeam(String playerName) {
-		playerName = playerName.toLowerCase();
-		return this.playersTeam.containsKey(playerName);
-	}
 	
-	/**
-	 * retourne l'equipe du joueur playerName
-	 * @param playerName
-	 * @return String
-	 * @throws Exception
-	 */
-	public String getPlayerTeam(String playerName) throws Exception{
-		playerName = playerName.toLowerCase();
-		if (!this.isPlayerInTeam(playerName)){
-			throw new Exception("You are not in team");
-		}
-		return this.playersTeam.get(playerName);
-	}
-
-
-		
 	public void joinTeam(String playerName, String teamName) {
 		teamName = teamName.toLowerCase();
 		playerName = playerName.toLowerCase();
@@ -192,9 +187,66 @@ public class TeamManager {
 		
 		this.gameEvent.teamJoinEvent(teamName, playerName);
 	}
-
-
 	
+	/**
+	 * Player team
+	 */
+	
+	/**
+	 * savoir si un joueur est dans une équipe
+	 * @param playerName
+	 * @return boolean
+	 */
+	public boolean isPlayerInTeam(String playerName) {
+		playerName = playerName.toLowerCase();
+		return this.playersTeam.containsKey(playerName);
+	}
+	
+	/**
+	 * retourne l'equipe du joueur playerName
+	 * @param playerName
+	 * @return String
+	 * @throws Exception
+	 */
+	public String getPlayerTeam(String playerName) throws Exception{
+		playerName = playerName.toLowerCase();
+		if (!this.isPlayerInTeam(playerName)){
+			throw new Exception("You are not in team");
+		}
+		return this.playersTeam.get(playerName);
+	}
+
+	/**
+	 * Retourne la liste des joueurs dans la même équipe que playerName
+	 * @param playerName
+	 * @return
+	 */
+	public String[] getPlayersTeamList(String playerName) {
+		if (this.isPlayerInTeam(playerName)) {
+			return this.getPlayersTeam(playerName).getPlayerList();
+		}
+		return null;
+	}
+
+	private Team getPlayersTeam(String playerName) {
+		playerName = playerName.toLowerCase();
+		if (playersTeam.containsKey(playerName)) {
+			return teams.get(playersTeam.get(playerName));
+		}
+		return null;
+	}
+
+	public String getPlayersTeamName(String player) {
+		player = player.toLowerCase();
+		if (playersTeam.containsKey(player)) {
+			return playersTeam.get(player);
+		}
+		return null;
+	}
+	
+	/**
+	 * Chat & discution
+	 */
 	
 	/**
 	 * TODO A delete ?
@@ -218,35 +270,7 @@ public class TeamManager {
 					+ "You are not in a party.");
 		}
 	}
-
 	
-	public String[] getPlayersTeamList(String playerName) {
-		if (this.isPlayerInTeam(playerName)) {
-			return this.getPlayersTeam(playerName).getPlayerList();
-		}
-		return null;
-	}
-
-	public void disbandAllTeam() {
-		for (int i = 0; i < teams.size(); i++) {
-			Iterator<Team> pit = teams.values().iterator();
-			while (pit.hasNext()) {
-				Team next = pit.next();
-				next.removeAllFromTeam();
-				pit.remove();
-			}
-		}
-		teams.clear();
-	}
-
-	private Team getPlayersTeam(String playerName) {
-		playerName = playerName.toLowerCase();
-		if (playersTeam.containsKey(playerName)) {
-			return teams.get(playersTeam.get(playerName));
-		}
-		return null;
-	}
-
 	public void sendTeamMessage(String teamName, String message) {
 		teamName = teamName.toLowerCase();
 		Team team = this.getTeam(teamName);
@@ -254,14 +278,6 @@ public class TeamManager {
 			team.sendTeamMessage(message);
 		}
 
-	}
-
-	public String getPlayersTeamName(String player) {
-		player = player.toLowerCase();
-		if (playersTeam.containsKey(player)) {
-			return playersTeam.get(player);
-		}
-		return null;
 	}
 
 }
