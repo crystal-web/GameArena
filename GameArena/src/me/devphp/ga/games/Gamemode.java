@@ -18,36 +18,55 @@ public enum Gamemode {
 		this.enable  = enabled;
 	}
 
+	/**
+	 * Retourne le nom long du mode de jeu
+	 * @return
+	 */
 	public String toString() {
 		return name;
 	}
 	
+	/**
+	 * Retourne le nom court du jeu
+	 * @return
+	 */
 	public String getTag() {
 		return tag;
 	}
 	
+	/**
+	 * Le mode de jeu est activé ?
+	 * @return
+	 */
 	public boolean isEnabled(){
 		return this.enable;
 	}
 
-	public static Gamemode get(String key){
+	/**
+	 * Retourne l'objet Gamemode
+	 * @param tag
+	 * @return
+	 */
+	public static Gamemode get(String tag){
 	    for (Gamemode c : Gamemode.values()) {
-
-	        if (c.tag.equalsIgnoreCase(key)) {
+	        if (c.tag.equalsIgnoreCase(tag)) {
 	            return c;
 	        }
-	        
 	    }
 	    return null;
 	}
 	
-	public static boolean contains(String test) {
+	/**
+	 * Savoir si la clé existe
+	 * @param tag
+	 * @return
+	 */
+	public static boolean contains(String tag) {
 	    for (Gamemode c : Gamemode.values()) {
-	        if (c.tag.equalsIgnoreCase(test)) {
+	        if (c.tag.equalsIgnoreCase(tag)) {
 	            return true;
 	        }
 	    }
-
 	    return false;
 	}
 }
