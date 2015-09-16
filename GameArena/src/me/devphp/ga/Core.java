@@ -30,8 +30,9 @@ public class Core extends JavaPlugin implements iPlugin{
 	/**
 	 * Instancie les arenes défini dans le fichier de configuration
 	 * @param core
+	 * @return 
 	 */
-	public Core() {
+	public void onEnable() {
 		this.configFile			 	= new File("plugins/GameManager/config.yml");
 		this.config					= YamlConfiguration.loadConfiguration(this.configFile);
 		this.games					= new HashMap<String, ArenaInterface>();
@@ -46,13 +47,14 @@ public class Core extends JavaPlugin implements iPlugin{
 			}
 		}
 		
-		PluginCommand commands = this.getCommand("arena");
+		String name = "arena";
+		PluginCommand commands = this.getCommand(name);		
 	
 		if (commands != null) {
-			//commands.setExecutor(new ArenaCommand(this));
-			log.severe(this.getPrefixNoColor() + "Command Arena loaded");
+			commands.setExecutor(new ArenaCommand(this));
+			log.info("Command Arena loaded");
 		} else {
-			log.severe(this.getPrefixNoColor() + "Command Arena not loaded");
+			log.severe("Command Arena not loaded");
 		}
 	}
 	
@@ -81,4 +83,5 @@ public class Core extends JavaPlugin implements iPlugin{
 	public JavaPlugin getPlugin() {
 		return this;
 	}
+	// */
 }

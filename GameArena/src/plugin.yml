@@ -1,7 +1,7 @@
-name: GameManager
+name: GameArena
 main: me.devphp.ga.Core
 authors: [Devphp]
 version: 1.0.0.0
 commands:
   arena:
-    description: GameManager SimpleGame Arena 
+    description: GameArena SimpleGame Arena 
