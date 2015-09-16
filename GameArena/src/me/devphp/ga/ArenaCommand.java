@@ -88,7 +88,6 @@ public class ArenaCommand implements CommandExecutor{
 					};
 				
 				try {
-					
 					player.sendMessage(
 						this.plugin.getPrefix() + 
 						ChatColor.GOLD + 
@@ -99,7 +98,7 @@ public class ArenaCommand implements CommandExecutor{
 					);
 					
 				} catch (Exception e) {
-					this.plugin.getLogger().info( this.plugin.getPrefix() + " Exception on read list of arena: " + e.getMessage() );
+					this.plugin.getLogger().info( "Exception on read list of arena: " + e.getMessage() );
 				}
 				
 			}
@@ -118,7 +117,7 @@ public class ArenaCommand implements CommandExecutor{
 		 */
 		if (
 				(
-					!player.hasPermission("gamecore.simplegame.creator") || !player.isOp()
+					!player.hasPermission("gamearena.creator") || !player.isOp()
 				)
 					&& 
 				(

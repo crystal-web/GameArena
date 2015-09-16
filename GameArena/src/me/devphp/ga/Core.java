@@ -16,7 +16,7 @@ import me.devphp.iPlugin;
 
 public class Core extends JavaPlugin implements iPlugin{
 	public Logger log = Logger.getLogger("Minecraft");
-	public String prefix = ChatColor.RESET + ""+ ChatColor.GRAY + "[" + ChatColor.GREEN + "GameManager" + ChatColor.GRAY + "] " + ChatColor.RESET;
+	public String prefix = ChatColor.RESET + ""+ ChatColor.GRAY + "[" + ChatColor.GREEN + "GameArena" + ChatColor.GRAY + "] " + ChatColor.RESET;
 	public String prefixNoColor = "[GameManager] ";
 	public String errorColor = ChatColor.BOLD +""+ ChatColor.RED;
 	
@@ -33,7 +33,7 @@ public class Core extends JavaPlugin implements iPlugin{
 	 * @return 
 	 */
 	public void onEnable() {
-		this.configFile			 	= new File("plugins/GameManager/config.yml");
+		this.configFile			 	= new File("plugins/GameArena/config.yml");
 		this.config					= YamlConfiguration.loadConfiguration(this.configFile);
 		this.games					= new HashMap<String, ArenaInterface>();
 		
@@ -47,12 +47,10 @@ public class Core extends JavaPlugin implements iPlugin{
 			}
 		}
 		
-		String name = "arena";
-		PluginCommand commands = this.getCommand(name);		
+		PluginCommand commands = this.getCommand("arena");		
 	
 		if (commands != null) {
 			commands.setExecutor(new ArenaCommand(this));
-			log.info("Command Arena loaded");
 		} else {
 			log.severe("Command Arena not loaded");
 		}

@@ -59,9 +59,12 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 		
 		// ICI le code
 		this.config		= this.plugin.getConfig();
-		for (String teamName : this.config.getConfigurationSection("arena." + this.arena + ".team").getKeys(false)){
-			this.log.info(this.plugin.getPrefix() + "TeamDeathMatch create team: " + teamName);
-			this.tm.createTeam(teamName);
+		
+		if (this.config.contains("arena." + this.arena + ".team")){
+			for (String teamName : this.config.getConfigurationSection("arena." + this.arena + ".team").getKeys(false)){
+				this.log.info(this.plugin.getPrefix() + "TeamDeathMatch create team: " + teamName);
+				this.tm.createTeam(teamName);
+			}
 		}
 		// threadRunningGame();
 	}
@@ -284,7 +287,7 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 	
 	@Override
 	public String get(String[] args, Player player) throws Exception {
-		// TODO Auto-generated method stub
+
 		return "Mmmmh... I am confused , I did not understand your request";
 	}
 
@@ -325,7 +328,7 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 			this.log.info(a);
 		}
 		if (key.size() == 1){
-			throw new Exception("2. Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
 		}
 		
 		if (!this.config.contains("arena." + this.arena + ".p2w")){

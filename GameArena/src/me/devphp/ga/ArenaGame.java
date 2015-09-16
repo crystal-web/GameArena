@@ -90,23 +90,29 @@ public class ArenaGame implements ArenaInterface {
 		if (this.hasReady() == false){
 			throw new Exception("Arena is not ready");
 		}
+		if (args.length == 2){
+			if (args[1].equalsIgnoreCase("mode")){
+				return this.plugin.config.getString("arena." + this.arena + ".mode");
+			} else if (args[1].equalsIgnoreCase("name")){
+				return this.arena;
+			}
+		}
 		return this.game.get(args, player);
 	}
 
 	@Override
 	public boolean set(String[] args, Player player) throws Exception {
-		if (this.hasReady() == false){
-			throw new Exception("Arena is not ready");
-		}
 		return this.game.set(args, player);
 	}
 
 	@Override
 	public boolean testing() throws Exception {
-		if (this.hasReady() == false){
-			throw new Exception("Arena is not ready");
+		if (this.game.testing()){
+			
+			this.plugin.games.put(this.arena, new ArenaGame(this.plugin, this.arena));
+			return true;
 		}
-		return this.game.testing();
+		return false;
 	}
 
 	@Override
