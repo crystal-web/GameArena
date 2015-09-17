@@ -45,21 +45,28 @@ public class ArenaCommand implements CommandExecutor{
 		/**
 		 * Utilisation coté joueur
 		 */
-		if (args[0].equalsIgnoreCase("join")){
-			if (args.length < 2){
-				player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena list" + ChatColor.RESET + " for list all arena available.");
-				player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena join <arena name>" + ChatColor.RESET + " to join arena");
-				return true;
+		
+		if (args.length < 1){
+			player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
+			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena list" + ChatColor.RESET + " for list all arena available.");
+			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena join <arena name>" + ChatColor.RESET + " to join arena");
+			player.sendMessage(this.plugin.getPrefix() + "========== Admin ==========");
+			if (player.hasPermission("gamearena.creator") || !player.isOp()){
+				player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena create <arena name>" + ChatColor.RESET + " for create arena");
+				player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena load <arena name>" + ChatColor.RESET + " for load arena");
 			}
-			
-			if (!this.plugin.games.containsKey(args[1].toString())){
+			return true;
+		}
+
+		if (args[0].equalsIgnoreCase("join")){
+			player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
+			if (args.length < 2 || !this.plugin.games.containsKey(args[1].toString())){
 				player.sendMessage(this.plugin.getPrefix() + "Unknown arena");
 				player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena list" + ChatColor.RESET + " for list all arena available.");
 				return true;
 			}
 			
 			ArenaInterface curArena = this.plugin.games.get(args[1].toString());
-			
 			try {
 				curArena.join(player, args);
 			} catch (Exception e) {
@@ -68,39 +75,30 @@ public class ArenaCommand implements CommandExecutor{
 			return true;
 		} else if (args[0].equalsIgnoreCase("list")){
 			player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
-			
 			if (this.plugin.games.size() == 0){
 				player.sendMessage(this.plugin.getPrefix() + "Never arena found");
 				return true;
 			}
 		
 			for(String game : this.plugin.games.keySet()){
-				
+				// Charge le jeu game
 				ArenaInterface ar = this.plugin.games.get(game);
-				
-				String[] name = { 
-						"get",
-					    "name"
-					};
-				String[] mode = { 
-						"get",
-					    "mode"
-					};
-				
-				try {
-					player.sendMessage(
-						this.plugin.getPrefix() + 
-						ChatColor.GOLD + 
-						ar.get(name, player) 
-						+ " " + 
-						ChatColor.RESET + 
-						Gamemode.get( ar.get(mode, player) ).toString() 
-					);
-					
-				} catch (Exception e) {
-					this.plugin.getLogger().info( "Exception on read list of arena: " + e.getMessage() );
+				if (ar != null){
+					String[] name = { "get", "name" };
+					String[] mode = { "get", "mode" };
+					try {
+						player.sendMessage(
+							this.plugin.getPrefix() + 
+							ChatColor.GOLD + 
+							ar.get(name, player) 
+							+ " " + 
+							ChatColor.RESET + 
+							Gamemode.get( ar.get(mode, player) ).toString() 
+						);
+					} catch (Exception e) {
+						this.plugin.getLogger().info( "Exception on read list of arena: " + e.getMessage() );
+					}
 				}
-				
 			}
 			
 			
