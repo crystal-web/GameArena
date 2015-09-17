@@ -49,15 +49,9 @@ public class TeamDeathMatch implements ArenaInterface{
 	private boolean hasReady = false;
 	
 	public TeamDeathMatch(Core plugin, String arena) {
+		this.reset();
 		this.arena		= arena;
 		this.plugin		= plugin;
-		this.init();
-		// threadRunningGame();
-	}
-	
-	private void init(){
-		this.teamEvent	= null;
-		this.tm			= null;
 		this.teamEvent	= new TeamDeathMatchTeamEvent(this);
 		this.tm			= new TeamManager(this.plugin, this.teamEvent);
 		
@@ -72,6 +66,27 @@ public class TeamDeathMatch implements ArenaInterface{
 				this.teamEvent.setPoint2wins(this.config.getInt("arena." + this.arena + ".p2w"));
 			}
 		}
+		// threadRunningGame();
+	}
+	
+	private void reset(){
+		this.playerPreviousLocations	= new HashMap<String, Location>();
+		this.playerInventory			= new HashMap<String, PlayerInventory>();
+		this.playerXp					= new HashMap<String, Float>();
+		
+		for (String teamName : this.tm.getTeams()){
+			for(String player : this.tm.getTeam(teamName).getPlayerList()){
+				Player pl = Bukkit.getPlayer(player);
+				if (pl != null){
+					pl.teleport(this.playerPreviousLocations.get(player));
+				}
+			}
+		}
+		
+		
+		
+		this.tm.disbandAllTeams();
+		
 	}
 	
 
@@ -82,10 +97,19 @@ public class TeamDeathMatch implements ArenaInterface{
 		this.starttime = new Timestamp(date.getTime()).getTime();
 		
 		this.broadcastMessage("Team Death Match ready. Teleport player on spawn");
-		this.savePlayerPreviousLocation();
-		this.saveInventory();
+
+		for (String teamName : this.tm.getTeams()){
+			for(String player : this.tm.getTeam(teamName).getPlayerList()){
+				Player pl = Bukkit.getPlayer(player);
+				if (pl != null){
+					this.savePlayerPreviousLocation(pl);
+					this.saveInventory(pl);
+					this.clearStats(pl);
+				}
+			}
+		}
+		
 		this.teleport();
-		this.clearStats();
 		
 		return true;
 	}
@@ -95,16 +119,17 @@ public class TeamDeathMatch implements ArenaInterface{
 		this.broadcastMessage("Congratulation. The game is now finish. Thanks for participation.");
 		this.broadcastScore();
 
-		for (String player : this.playerPreviousLocations.keySet()) {
-			Player pl = Bukkit.getPlayer(player);
-			if (pl != null){
-				pl.teleport(this.playerPreviousLocations.get(player));
-				this.playerPreviousLocations.remove(player);
+		for (String teamName : this.tm.getTeams()){
+			for(String player : this.tm.getTeam(teamName).getPlayerList()){
+				Player pl = Bukkit.getPlayer(player);
+				if (pl != null){
+					pl.teleport(this.playerPreviousLocations.get(player));
+				}
 			}
 		}
-	
-		// TODO méthode incorrecte
-		this.init();
+		
+
+		this.reset();
 	}
 
 	
@@ -160,22 +185,12 @@ public class TeamDeathMatch implements ArenaInterface{
 	/**
 	 * Sauvegarde l'inventaire des joueurs
 	 */
-	private void saveInventory(){
-		this.playerInventory	= new HashMap<String, PlayerInventory>();
-		this.playerXp			= new HashMap<String, Float>();
-		
-		for (String teamName : this.tm.getTeams()){
-			for(String player : this.tm.getTeam(teamName).getPlayerList()){
-				Player pl = Bukkit.getPlayer(player);
-				if (pl != null){
-					this.playerInventory.put(player,  pl.getInventory());
-					this.playerXp.put(player,  pl.getExp());
-				}
-			}
-		}
+	private void saveInventory(Player player){		
+		this.playerInventory.put(player.getName().toString(),  player.getInventory());
+		this.playerXp.put(player.getName().toString(),  player.getExp());
 	}
 
-	public void restoreInv(String player) {
+	public void restoreInventory(String player) {
 		Player pl = Bukkit.getPlayer(player);
 		PlayerInventory PlayerInv = pl.getInventory();
 
@@ -198,17 +213,8 @@ public class TeamDeathMatch implements ArenaInterface{
 		}
 	}
 	
-	private void savePlayerPreviousLocation(){
-		this.playerPreviousLocations = new HashMap<String, Location>();
-		
-		for (String teamName : this.tm.getTeams()){
-			for(String player : this.tm.getTeam(teamName).getPlayerList()){
-				Player pl = Bukkit.getPlayer(player);
-				if (pl != null){
-					this.playerPreviousLocations.put(player,  pl.getLocation());
-				}
-			}
-		}
+	private void savePlayerPreviousLocation(Player player){
+		this.playerPreviousLocations.put(player.getName().toString(),  player.getLocation());
 	}
 	
 	/**
@@ -218,35 +224,16 @@ public class TeamDeathMatch implements ArenaInterface{
 	 * 
 	 * @param Player
 	 */
-	public void clearStats() {
-		
-		for (String teamName : this.tm.getTeams()){
-			// Charge l'endroit ou doit etre teleporté le joueur de l'equipe teamName
-			Location teamSpawn = new Location(
-				Bukkit.getWorld(this.config.getString("arena." + this.arena + ".team." + teamName + ".w")), 
-				this.config.getDouble("arena." + this.arena + ".team." + teamName + ".x"),
-				this.config.getDouble("arena." + this.arena + ".team." + teamName + ".y"),
-				this.config.getDouble("arena." + this.arena + ".team." + teamName + ".z")
-			);
-			// Teleport les joueurs a teamSpawn
-			for(String player : this.tm.getTeam(teamName).getPlayerList()){
-				
-				Player pl = Bukkit.getPlayer(player); 
-				if (pl != null){
-					pl.removePotionEffect(PotionEffectType.INVISIBILITY);
-					pl.getWorld().setPVP(true);
-					pl.getInventory().clear();
-					pl.getInventory().setArmorContents(null);
-					pl.setGameMode(GameMode.SURVIVAL);
-					pl.setFlying(false);
-					pl.setFoodLevel(20);
-					pl.setHealth(20.00);
-					pl.setLevel(0);
-				}
-			}
-		}
-		
-
+	public void clearStats(Player player) {
+		player.removePotionEffect(PotionEffectType.INVISIBILITY);
+		player.getWorld().setPVP(true);
+		player.getInventory().clear();
+		player.getInventory().setArmorContents(null);
+		player.setGameMode(GameMode.SURVIVAL);
+		player.setFlying(false);
+		player.setFoodLevel(20);
+		player.setHealth(20.00);
+		player.setLevel(0);
 	}
 	
 	private void teleport(){
@@ -362,7 +349,7 @@ public class TeamDeathMatch implements ArenaInterface{
 			throw new Exception("Save configuration file fail");
 		}
 		
-		this.init();
+		this.reset();
 		
 		return true;
 	}
