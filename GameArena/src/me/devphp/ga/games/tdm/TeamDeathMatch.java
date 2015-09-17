@@ -68,10 +68,6 @@ public class TeamDeathMatch implements ArenaInterface{
 	}
 	
 	private void reset(){
-		this.playerPreviousLocations	= new HashMap<String, Location>();
-		this.playerInventory			= new HashMap<String, PlayerInventory>();
-		this.playerXp					= new HashMap<String, Float>();
-		
 		for (String teamName : this.tm.getTeams()){
 			for(String player : this.tm.getTeam(teamName).getPlayerList()){
 				Player pl = Bukkit.getPlayer(player);
@@ -80,6 +76,10 @@ public class TeamDeathMatch implements ArenaInterface{
 				}
 			}
 		}
+		
+		this.playerPreviousLocations	= new HashMap<String, Location>();
+		this.playerInventory			= new HashMap<String, PlayerInventory>();
+		this.playerXp					= new HashMap<String, Float>();
 		
 		this.tm.disbandAllTeams();
 	}
