@@ -33,18 +33,15 @@ public class TeamDeathMatch implements ArenaInterface{
 
 	public TeamManager tm;
 	private TeamDeathMatchTeamEvent teamEvent;
+
 	public boolean gamestarted = false;
 	public long starttime;
 	public int gametime = 300;
 	
 	private HashMap<String, PlayerInventory> playerInventory;
 	private HashMap<String, Float> playerXp;
-	
 	private HashMap<String, Location> playerPreviousLocations;
 	
-
-
-	private boolean continueThread = true;
 	private YamlConfiguration config;
 	private boolean hasReady = false;
 	
@@ -84,19 +81,15 @@ public class TeamDeathMatch implements ArenaInterface{
 			}
 		}
 		
-		
-		
 		this.tm.disbandAllTeams();
-		
 	}
 	
 
-	
 	public boolean startGame(){
 		// Temps en seconde
 		Date date= new Date();
 		this.starttime = new Timestamp(date.getTime()).getTime();
-		
+		this.broadcastMessage("===== Team Death Match =====");
 		this.broadcastMessage("Team Death Match ready. Teleport player on spawn");
 
 		for (String teamName : this.tm.getTeams()){
@@ -109,14 +102,14 @@ public class TeamDeathMatch implements ArenaInterface{
 				}
 			}
 		}
-		
+
 		this.teleport();
-		
 		return true;
 	}
 	
 	
 	public void endGame(){
+		this.broadcastMessage("===== Team Death Match =====");
 		this.broadcastMessage("Congratulation. The game is now finish. Thanks for participation.");
 		this.broadcastScore();
 
@@ -129,7 +122,6 @@ public class TeamDeathMatch implements ArenaInterface{
 			}
 		}
 		
-
 		this.reset();
 	}
 
