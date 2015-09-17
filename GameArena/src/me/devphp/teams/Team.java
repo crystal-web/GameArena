@@ -13,13 +13,10 @@ public class Team {
 	private ArrayList<String> joinedPlayers;
 	public Logger log = Logger.getLogger("Minecraft");
 	
-//	private TeamEvent event;
-	
 	public Team(String teamName)
     {
         this.teamName = teamName;
         this.joinedPlayers = new ArrayList<String>();
-//        event.teamCreatedEvent(teamName);
     }
 
     public void addToTeam(String player)
@@ -30,9 +27,8 @@ public class Team {
         }
         
         if(!isInTeam(player)){
+        	sendTeamMessage(player + " has joined the team.");
             joinedPlayers.add(player);
-            // event.teamJoinEvent(this.getTeamName(), player);
-            sendTeamMessage(player + " has joined the team.");
         }
     }
 

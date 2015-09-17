@@ -10,8 +10,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.devphp.iPlugin;
+import test.ExampleSelfCancelingTask;
 
 
 public class Core extends JavaPlugin implements iPlugin{
@@ -54,6 +56,8 @@ public class Core extends JavaPlugin implements iPlugin{
 		} else {
 			log.severe("Command Arena not loaded");
 		}
+		
+		
 	}
 	
 	@Override

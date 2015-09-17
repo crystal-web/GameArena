@@ -49,14 +49,18 @@ public class ArenaGame implements ArenaInterface {
 		this.plugin		= core;
 		this.arena		= arena;
 		
+		player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
 		if (this.plugin.getConfig().contains("arena." + this.arena + ".mode")){
+			
 			// Regard le mode de jeu a charger
 			switch(this.plugin.getConfig().getString("arena." + this.arena + ".mode").toLowerCase()){
 				// C'est un TeamDeathMatch
 				case "tdm":
+					player.sendMessage(this.plugin.getPrefix() + "Arena has loaded, has TeamDeathMAtch");
 					this.game	= new TeamDeathMatch(this.plugin, this.arena);
 				break;
 				default:
+					player.sendMessage(this.plugin.getPrefix() + "Arena mode unknown for " + this.arena + ". Check configuration file Arena.yml");
 					this.plugin.getLogger().info(this.plugin.getPrefixNoColor() + "Arena mode unknown for " + this.arena + ". Check configuration file Arena.yml");
 				break;
 			}
@@ -108,7 +112,6 @@ public class ArenaGame implements ArenaInterface {
 	@Override
 	public boolean testing() throws Exception {
 		if (this.game.testing()){
-			
 			this.plugin.games.put(this.arena, new ArenaGame(this.plugin, this.arena));
 			return true;
 		}

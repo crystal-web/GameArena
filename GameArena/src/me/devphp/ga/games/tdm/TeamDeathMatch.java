@@ -14,10 +14,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 
@@ -25,11 +23,10 @@ import me.devphp.ga.ArenaGame;
 import me.devphp.ga.ArenaInterface;
 import me.devphp.ga.Core;
 import me.devphp.ga.games.Gamemode;
-import me.devphp.teams.TeamEvent;
 import me.devphp.teams.TeamManager;
 
 
-public class TeamDeathMatch implements ArenaInterface, TeamEvent{
+public class TeamDeathMatch implements ArenaInterface{
 	public Logger log = Logger.getLogger("Minecraft");
 	private String arena;
 	private Core plugin;
@@ -43,8 +40,8 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 	private HashMap<String, PlayerInventory> playerInventory;
 	private HashMap<String, Float> playerXp;
 	
-	private HashMap<String, Location> playerlocations;
-	private HashMap<String, Integer> teamPoint;
+	private HashMap<String, Location> playerPreviousLocations;
+	
 
 
 	private boolean continueThread = true;
@@ -54,16 +51,18 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 	public TeamDeathMatch(Core plugin, String arena) {
 		this.arena		= arena;
 		this.plugin		= plugin;
-		this.teamEvent	= new TeamDeathMatchTeamEvent();
+		this.teamEvent	= new TeamDeathMatchTeamEvent(this);
 		this.tm			= new TeamManager(this.plugin, this.teamEvent);
 		
 		// ICI le code
 		this.config		= this.plugin.getConfig();
-		
 		if (this.config.contains("arena." + this.arena + ".team")){
 			for (String teamName : this.config.getConfigurationSection("arena." + this.arena + ".team").getKeys(false)){
-				this.log.info(this.plugin.getPrefix() + "TeamDeathMatch create team: " + teamName);
 				this.tm.createTeam(teamName);
+			}
+			
+			if (this.config.contains("arena." + this.arena + ".p2w")){
+				this.teamEvent.setPoint2wins(this.config.getInt("arena." + this.arena + ".p2w"));
 			}
 		}
 		// threadRunningGame();
@@ -72,12 +71,6 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 
 	
 	public boolean startGame(){
-				
-		this.teamPoint = new HashMap<String, Integer>();
-		for (String teamName : tm.getTeams()){
-			this.teamPoint.put(teamName, 0);
-		}
-		
 		// Temps en seconde
 		Date date= new Date();
 		this.starttime = new Timestamp(date.getTime()).getTime();
@@ -86,6 +79,7 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 		this.savePlayerPreviousLocation();
 		this.saveInventory();
 		this.teleport();
+		this.clearStats();
 		
 		return true;
 	}
@@ -95,34 +89,34 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 		this.broadcastMessage("Congratulation. The game is now finish. Thanks for participation.");
 		this.broadcastScore();
 
-		for (String player : this.playerlocations.keySet()) {
+		for (String player : this.playerPreviousLocations.keySet()) {
 			Player pl = Bukkit.getPlayer(player);
 			if (pl != null){
-				pl.teleport(this.playerlocations.get(player));
-				this.playerlocations.remove(player);
+				pl.teleport(this.playerPreviousLocations.get(player));
+				this.playerPreviousLocations.remove(player);
 			}
 		}
 	
+		// TODO mÈthode incorrecte
 		this.plugin.games.put(this.arena, new ArenaGame(this.plugin, this.arena));
 	}
 
 	
 	public void broadcastScore(){
 		Map<Integer, String> unsortMap = new HashMap<Integer, String>();
-		
 		for (String teamName : tm.getTeams()){
-			unsortMap.put(this.teamPoint.get(teamName), teamName);
+			this.plugin.log.info(teamName + " " + this.teamEvent.teamPoint.get(teamName));
+			unsortMap.put(this.teamEvent.teamPoint.get(teamName), teamName);
 		}
 		
 		Map<Integer, String> treeMap = new TreeMap<Integer, String>(
 			new Comparator<Integer>() {
-
-			@Override
-			public int compare(Integer o1, Integer o2) {
-				return o2.compareTo(o1);
+				@Override
+				public int compare(Integer o1, Integer o2) {
+					return o2.compareTo(o1);
+				}
 			}
-
-		});
+		);
 		treeMap.putAll(unsortMap);
 		
 		int i = 0;
@@ -199,13 +193,13 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 	}
 	
 	private void savePlayerPreviousLocation(){
-		this.playerlocations = new HashMap<String, Location>();
+		this.playerPreviousLocations = new HashMap<String, Location>();
 		
 		for (String teamName : this.tm.getTeams()){
 			for(String player : this.tm.getTeam(teamName).getPlayerList()){
 				Player pl = Bukkit.getPlayer(player);
 				if (pl != null){
-					this.playerlocations.put(player,  pl.getLocation());
+					this.playerPreviousLocations.put(player,  pl.getLocation());
 				}
 			}
 		}
@@ -218,17 +212,35 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 	 * 
 	 * @param Player
 	 */
-	public void clearStats(Player player) {
-		player.removePotionEffect(PotionEffectType.INVISIBILITY);
-		player.getWorld().setPVP(true);
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(null);
-		player.setGameMode(GameMode.SURVIVAL);
-		player.setFlying(false);
-		// TODO Check les possibilit√© depr√©ci√©
-		player.setFoodLevel(20);
-		player.setHealth(20.00);
-		player.setLevel(0);
+	public void clearStats() {
+		
+		for (String teamName : this.tm.getTeams()){
+			// Charge l'endroit ou doit etre teleportÈ le joueur de l'equipe teamName
+			Location teamSpawn = new Location(
+				Bukkit.getWorld(this.config.getString("arena." + this.arena + ".team." + teamName + ".w")), 
+				this.config.getDouble("arena." + this.arena + ".team." + teamName + ".x"),
+				this.config.getDouble("arena." + this.arena + ".team." + teamName + ".y"),
+				this.config.getDouble("arena." + this.arena + ".team." + teamName + ".z")
+			);
+			// Teleport les joueurs a teamSpawn
+			for(String player : this.tm.getTeam(teamName).getPlayerList()){
+				
+				Player pl = Bukkit.getPlayer(player); 
+				if (pl != null){
+					pl.removePotionEffect(PotionEffectType.INVISIBILITY);
+					pl.getWorld().setPVP(true);
+					pl.getInventory().clear();
+					pl.getInventory().setArmorContents(null);
+					pl.setGameMode(GameMode.SURVIVAL);
+					pl.setFlying(false);
+					pl.setFoodLevel(20);
+					pl.setHealth(20.00);
+					pl.setLevel(0);
+				}
+			}
+		}
+		
+
 	}
 	
 	private void teleport(){
@@ -293,12 +305,16 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 	public boolean set(String[] args, Player player) throws Exception {
 		
 		if (args.length == 3){
+			
 			switch(args[1].toString()){
 				case "team":
 					this.config.set("arena." + this.arena + ".team." + args[2].toString() + ".w", player.getLocation().getWorld().getName().toString());
 					this.config.set("arena." + this.arena + ".team." + args[2].toString() + ".x", player.getLocation().getX());
 					this.config.set("arena." + this.arena + ".team." + args[2].toString() + ".y", player.getLocation().getY());
 					this.config.set("arena." + this.arena + ".team." + args[2].toString() + ".z", player.getLocation().getZ());
+
+					player.sendMessage(this.plugin.getPrefix() + "===== Team Death Match =====");
+					player.sendMessage(this.plugin.getPrefix() + "Team created and spawn defined");
 				break;
 				case "p2w":
 					if (Integer.valueOf(args[2].toString()) == 0){
@@ -306,6 +322,9 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 					}
 					
 					this.config.set("arena." + this.arena + ".p2w", Integer.valueOf(args[2].toString()));
+					
+					player.sendMessage(this.plugin.getPrefix() + "===== Team Death Match =====");
+					player.sendMessage(this.plugin.getPrefix() + "Point to wins defined");
 				break;
 			}
 		}
@@ -315,16 +334,13 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 
 	@Override
 	public boolean testing() throws Exception {
-		this.log.info("ArenaCore TDM called");
+		this.log.info("GameArena.testing() called");
 
 		if (!this.config.contains("arena." + this.arena + ".team")){
-			throw new Exception("1. Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
 		}
 		
 		Set<String> key = this.config.getConfigurationSection("arena." + this.arena + ".team").getKeys(false);
-		for (String a : key){
-			this.log.info(a);
-		}
 		if (key.size() == 1){
 			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
 		}
@@ -342,50 +358,6 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 		
 		
 		return true;
-	}
-
-	@Override
-	public void teamCreatedEvent(String teamName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void teamJoinEvent(String teamName, String playerName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void teamLeaveEvent(String teamName, String playerName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void teamDeathEvent(String teamName, String playerName, PlayerDeathEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void teamKillEvent(String teamName, String playerName, PlayerDeathEvent event) {
-		// TODO Auto-generated method stub
-		Integer pts = this.teamPoint.get(teamName);
-		pts = pts + 1;
-		this.teamPoint.put(teamName, pts);
-		
-		if (event.getEntity().getKiller() instanceof Player){
-			Player killer = event.getEntity().getKiller();
-			killer.getWorld().playSound(killer.getLocation(), Sound.FALL_BIG,1, 0);
-			
-			
-			if (event.getEntity() instanceof Player){
-				Player death = event.getEntity();
-				this.broadcastMessage("[" + teamName + "]" + killer.getName().toString() + " has killed [" + this.tm.getTeam(death.getName().toString()) + "]" + death.getName().toString());
-			}
-		
-		}
 	}
 
 	@Override

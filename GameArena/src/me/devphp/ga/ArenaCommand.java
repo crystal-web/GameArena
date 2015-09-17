@@ -125,7 +125,8 @@ public class ArenaCommand implements CommandExecutor{
 				)
 				
 			){
-			player.sendMessage(this.plugin.getPrefix() + ChatColor.RED + "You dont have permission \"gamecore.simplegame.creator\"");
+			player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
+			player.sendMessage(this.plugin.getPrefix() + ChatColor.RED + "You dont have permission \"gamearena.creator\"");
 			return false;
 		}
 		
@@ -141,6 +142,7 @@ public class ArenaCommand implements CommandExecutor{
 					args[0].equalsIgnoreCase("test")
 				)
 			){
+			player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
 			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena [create|load] <arena name>" + ChatColor.RESET + " before.");
 			return true;
 		}
@@ -235,6 +237,7 @@ public class ArenaCommand implements CommandExecutor{
 				return false;
 			}
 			
+			player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
 			ArenaGame test = this.Arena( player.getName().toString() );
 			try {
 				this.plugin.getLogger().info("Call testing for " + player.getName().toString());

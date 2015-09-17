@@ -33,9 +33,10 @@ public class TeamManager {
 	// le joueur et son équipe (pour les recherches)
 	private Map<String, String> playersTeam;
 	
-	
+	private int minTeamSize;
 	private int maxTeamSize;
 	TeamEvent gameEvent;
+	
 	
 	public TeamManager(iPlugin plugin, TeamEvent game) {
 		this.plugin			= plugin;
@@ -43,6 +44,7 @@ public class TeamManager {
 		this.teams			= new HashMap<String, Team>();
 		this.playersTeam	= new HashMap<String, String>();
 		
+		this.minTeamSize	= 1;
 		this.maxTeamSize	= 4;
 		
 		// TODO A tester
@@ -61,6 +63,22 @@ public class TeamManager {
 	/**
 	 * Propriété
 	 */
+	
+	/**
+	 * retourne la taille maximal d'une equipe
+	 * @return int
+	 */
+	public int getMinTeamSize() {
+		return this.minTeamSize;
+	}
+	
+	/**
+	 * Définit la taille maximal d'une équipe
+	 * @param size
+	 */
+	public void setMinTeamSize(int size) {
+		this.minTeamSize = size;
+	}
 	
 	/**
 	 * retourne la taille maximal d'une equipe
@@ -105,8 +123,8 @@ public class TeamManager {
 	public void createTeam(String teamName) {
 		teamName = teamName.toLowerCase();
 		if (this.teamExists(teamName)) {
-			this.log.info(this.plugin.getPrefix() + ChatColor.RED
-					+ "Error, this team name already exists...");
+			this.log.info(this.plugin.getPrefixNoColor() + 
+					"Error, this team name already exists...");
 			return;
 		}
 		this.teams.put(teamName, new Team(teamName));
@@ -175,12 +193,12 @@ public class TeamManager {
 			return;
 		}
 
-		team.addToTeam(playerName);
+		
 		this.playersTeam.put(playerName, teamName);
 		
 		player.sendMessage(this.plugin.getPrefix() + 
 				"You join " + ChatColor.GOLD + teamName + ChatColor.RESET + " !");
-		
+		team.addToTeam(playerName);
 		this.gameEvent.teamJoinEvent(teamName, playerName);
 	}
 	
