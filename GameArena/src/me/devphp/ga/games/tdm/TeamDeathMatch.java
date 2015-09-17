@@ -51,6 +51,13 @@ public class TeamDeathMatch implements ArenaInterface{
 	public TeamDeathMatch(Core plugin, String arena) {
 		this.arena		= arena;
 		this.plugin		= plugin;
+		this.init();
+		// threadRunningGame();
+	}
+	
+	private void init(){
+		this.teamEvent	= null;
+		this.tm			= null;
 		this.teamEvent	= new TeamDeathMatchTeamEvent(this);
 		this.tm			= new TeamManager(this.plugin, this.teamEvent);
 		
@@ -65,7 +72,6 @@ public class TeamDeathMatch implements ArenaInterface{
 				this.teamEvent.setPoint2wins(this.config.getInt("arena." + this.arena + ".p2w"));
 			}
 		}
-		// threadRunningGame();
 	}
 	
 
@@ -98,7 +104,7 @@ public class TeamDeathMatch implements ArenaInterface{
 		}
 	
 		// TODO méthode incorrecte
-		this.plugin.games.put(this.arena, new ArenaGame(this.plugin, this.arena));
+		this.init();
 	}
 
 	
@@ -356,6 +362,7 @@ public class TeamDeathMatch implements ArenaInterface{
 			throw new Exception("Save configuration file fail");
 		}
 		
+		this.init();
 		
 		return true;
 	}
