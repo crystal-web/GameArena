@@ -55,7 +55,7 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 		this.arena		= arena;
 		this.plugin		= plugin;
 		this.teamEvent	= new TeamDeathMatchTeamEvent();
-		this.tm			= new TeamManager(this.plugin, this.teamEvent, arena);
+		this.tm			= new TeamManager(this.plugin, this.teamEvent);
 		
 		// ICI le code
 		this.config		= this.plugin.getConfig();
@@ -92,7 +92,6 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 	
 	
 	public void endGame(){
-		
 		this.broadcastMessage("Congratulation. The game is now finish. Thanks for participation.");
 		this.broadcastScore();
 
@@ -181,7 +180,6 @@ public class TeamDeathMatch implements ArenaInterface, TeamEvent{
 		PlayerInventory PlayerInv = pl.getInventory();
 
 		if (this.playerInventory.get(player) != null) {
-
 			PlayerInv.setContents(this.playerInventory.get(player).getContents());
 			PlayerInv.setBoots(this.playerInventory.get(player).getBoots() == null ? null
 					: this.playerInventory.get(player).getBoots());

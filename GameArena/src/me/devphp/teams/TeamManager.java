@@ -35,15 +35,11 @@ public class TeamManager {
 	
 	
 	private int maxTeamSize;
-	
-	private String arenaName;
 	TeamEvent gameEvent;
 	
-	
-	public TeamManager(iPlugin plugin, TeamEvent game, String arenaName) {
+	public TeamManager(iPlugin plugin, TeamEvent game) {
 		this.plugin			= plugin;
 		this.gameEvent		= game;
-		this.arenaName		= arenaName;
 		this.teams			= new HashMap<String, Team>();
 		this.playersTeam	= new HashMap<String, String>();
 		
