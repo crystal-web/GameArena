@@ -49,11 +49,12 @@ public class TeamDeathMatch implements ArenaInterface{
 	private boolean hasReady = false;
 	
 	public TeamDeathMatch(Core plugin, String arena) {
-		this.reset();
 		this.arena		= arena;
 		this.plugin		= plugin;
 		this.teamEvent	= new TeamDeathMatchTeamEvent(this);
 		this.tm			= new TeamManager(this.plugin, this.teamEvent);
+		
+		this.reset();
 		
 		// ICI le code
 		this.config		= this.plugin.getConfig();
