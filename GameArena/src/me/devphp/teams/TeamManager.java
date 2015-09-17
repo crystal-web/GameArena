@@ -114,11 +114,7 @@ public class TeamManager {
 			}
 		}
 		teams.clear();
-		// test 
-		for (String tm : teams.keySet()){
-			this.log.info(this.plugin.getPrefixNoColor() + 
-					tm);
-		}
+		this.playersTeam	= new HashMap<String, String>();
 	}
 	
 	/**

@@ -1,7 +1,10 @@
 name: GameArena
 main: me.devphp.ga.Core
 authors: [Devphp]
-version: 1.0.0.0
+version: 1.0.1.0
 commands:
   arena:
-    description: GameArena SimpleGame Arena 
+    description: GameArena SimpleGame Arena
+permissions:
+  gamearena.creator:
+    description: allows the creation of arena

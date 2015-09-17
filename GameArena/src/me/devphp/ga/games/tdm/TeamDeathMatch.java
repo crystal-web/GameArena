@@ -51,10 +51,12 @@ public class TeamDeathMatch implements ArenaInterface{
 		this.teamEvent	= new TeamDeathMatchTeamEvent(this);
 		this.tm			= new TeamManager(this.plugin, this.teamEvent);
 		
-		this.reset();
+		
 		
 		// ICI le code
 		this.config		= this.plugin.getConfig();
+		this.reset();
+		
 		if (this.config.contains("arena." + this.arena + ".team")){
 			for (String teamName : this.config.getConfigurationSection("arena." + this.arena + ".team").getKeys(false)){
 				this.tm.createTeam(teamName);
@@ -82,6 +84,15 @@ public class TeamDeathMatch implements ArenaInterface{
 		this.playerXp					= new HashMap<String, Float>();
 		
 		this.tm.disbandAllTeams();
+		if (this.config.contains("arena." + this.arena + ".team")){
+			for (String teamName : this.config.getConfigurationSection("arena." + this.arena + ".team").getKeys(false)){
+				this.tm.createTeam(teamName);
+			}
+			
+			if (this.config.contains("arena." + this.arena + ".p2w")){
+				this.teamEvent.setPoint2wins(this.config.getInt("arena." + this.arena + ".p2w"));
+			}
+		}
 	}
 	
 
@@ -250,9 +261,7 @@ public class TeamDeathMatch implements ArenaInterface{
 	}
 	
 	@Override
-	public boolean join(Player player, String[] args) {
-		this.log.info("TeamDeathMatch join: " + player.getName().toString() + " " + args.toString());
-		
+	public boolean join(Player player, String[] args) {		
 		int nb = -1;
 		String teamName = null;
 		
