@@ -29,8 +29,8 @@ import me.devphp.teams.TeamManager;
 
 public class TeamDeathMatch implements ArenaInterface{
 	public Logger log = Logger.getLogger("Minecraft");
-	private String arena;
-	private Core plugin;
+	String arena;
+	Core plugin;
 
 	public TeamManager tm;
 	private TeamDeathMatchTeamEvent teamEvent;
@@ -41,7 +41,7 @@ public class TeamDeathMatch implements ArenaInterface{
 	private HashMap<String, Float> playerXp;
 	private HashMap<String, Location> playerPreviousLocations;
 	
-	private YamlConfiguration config;
+	YamlConfiguration config;
 	private boolean hasReady = false;
 	
 	public TeamDeathMatch(Core plugin, String arena) {
@@ -61,6 +61,7 @@ public class TeamDeathMatch implements ArenaInterface{
 			if (this.config.contains("arena." + this.arena + ".p2w")){
 				this.teamEvent.setPoint2wins(this.config.getInt("arena." + this.arena + ".p2w"));
 			}
+			// TODO et le temps ?
 		}
 		// threadRunningGame();
 	}

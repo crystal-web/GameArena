@@ -2,10 +2,14 @@ package me.devphp.ga.games.tdm;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.devphp.teams.TeamEvent;
 
@@ -23,6 +27,16 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 	
 	public void setPoint2wins(Integer p2w){
 		this.p2w = p2w;
+	}
+	
+	private void incrementPoint(String teamName){
+		int pt = this.teamPoint.get(teamName);
+		pt++;
+		this.teamPoint.put(teamName, pt);
+		
+		if (pt >= this.p2w){
+			this.tdm.endGame();
+		}
 	}
 	
 	@Override
@@ -78,16 +92,27 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 		
 		}		
 	}
-	
-	
-	private void incrementPoint(String teamName){
-		int pt = this.teamPoint.get(teamName);
-		pt++;
-		this.teamPoint.put(teamName, pt);
+
+	@Override
+	public void teamRespawnEvent(String teamName, String playerName, PlayerRespawnEvent event) {
+		this.tdm.log.info("teamRespawnEvent");
+		final Player player = event.getPlayer();
 		
-		if (pt >= this.p2w){
-			this.tdm.endGame();
-		}
+		final Location teamSpawn = new Location(
+				Bukkit.getWorld(this.tdm.config.getString("arena." + this.tdm.arena + ".team." + teamName + ".w")), 
+				this.tdm.config.getDouble("arena." + this.tdm.arena + ".team." + teamName + ".x"),
+				this.tdm.config.getDouble("arena." + this.tdm.arena + ".team." + teamName + ".y"),
+				this.tdm.config.getDouble("arena." + this.tdm.arena + ".team." + teamName + ".z")
+			);
+		
+		new BukkitRunnable() {
+			  public void run() {
+				  player.teleport(teamSpawn);
+			  }
+			}.runTaskLater(this.tdm.plugin, 20L);
+			
+		
 	}
+
 
 }
