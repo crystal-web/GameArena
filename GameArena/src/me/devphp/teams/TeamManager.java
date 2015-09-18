@@ -52,7 +52,7 @@ public class TeamManager {
 			.getPlugin()
 			.getServer()
 			.getPluginManager()
-			.registerEvents(new PlayerListener(this), (Plugin) this.plugin);
+			.registerEvents(new TeamPlayerListener(this), (Plugin) this.plugin);
 	}
 	
 	

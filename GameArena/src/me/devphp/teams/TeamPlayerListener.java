@@ -12,11 +12,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class PlayerListener implements Listener {
+public class TeamPlayerListener implements Listener {
 	public Logger log = Logger.getLogger("Minecraft");
 	private TeamManager teamManager;
 
-	public PlayerListener(TeamManager tm){
+	public TeamPlayerListener(TeamManager tm){
 		this.teamManager = tm;
 	}
 	
@@ -70,15 +70,12 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void playerRespawn(PlayerRespawnEvent event){
 		Player player = event.getPlayer();
-		log.info("playerRespawn");
 		if (this.teamManager.isPlayerInTeam(player.getName().toString())){
-			log.info("playerRespawn isPlayerInTeam");
 			try {
 				String teamName = this.teamManager.getPlayerTeam( player.getName().toString() );
 				this.teamManager.gameEvent.teamRespawnEvent(teamName, player.getName().toString(), event);
-				log.info("playerRespawn try");
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				this.log.severe(e.getMessage());
 				e.printStackTrace();
 			}
 		}

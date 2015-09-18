@@ -95,9 +95,7 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 
 	@Override
 	public void teamRespawnEvent(String teamName, String playerName, PlayerRespawnEvent event) {
-		this.tdm.log.info("teamRespawnEvent");
-		final Player player = event.getPlayer();
-		
+		final Player player = event.getPlayer();		
 		final Location teamSpawn = new Location(
 				Bukkit.getWorld(this.tdm.config.getString("arena." + this.tdm.arena + ".team." + teamName + ".w")), 
 				this.tdm.config.getDouble("arena." + this.tdm.arena + ".team." + teamName + ".x"),
