@@ -1,9 +1,7 @@
 package me.devphp.ga.games.tdm;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +18,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
-import me.devphp.ga.ArenaGame;
 import me.devphp.ga.ArenaInterface;
 import me.devphp.ga.Core;
 import me.devphp.ga.games.Gamemode;

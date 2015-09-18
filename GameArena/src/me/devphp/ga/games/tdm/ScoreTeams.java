@@ -6,7 +6,6 @@ import me.devphp.teams.TeamManager;
 
 public class ScoreTeams {
 	private HashMap<String, Integer> teamPoint;
-	private TeamManager teams;
 	
 	public ScoreTeams(){
 		this.teamPoint = new HashMap<String, Integer>();

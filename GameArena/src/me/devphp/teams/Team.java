@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-
 public class Team {
 	private String teamName;
 	private ArrayList<String> joinedPlayers;
@@ -18,7 +17,7 @@ public class Team {
         this.teamName = teamName;
         this.joinedPlayers = new ArrayList<String>();
     }
-
+	
     public void addToTeam(String player)
     {
         if(player == null){

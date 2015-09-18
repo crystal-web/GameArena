@@ -179,6 +179,13 @@ public class TeamManager {
 		return null;
 	}
 	
+	public Team getTeamFromPlayerName(String playerName) {	
+		if (this.isPlayerInTeam(playerName)) {
+			return this.teams.get(this.getPlayersTeam(playerName));
+		}
+		return null;
+	}
+	
 	public void joinTeam(String playerName, String teamName) {
 		teamName = teamName.toLowerCase();
 		playerName = playerName.toLowerCase();
@@ -209,7 +216,7 @@ public class TeamManager {
 		team.addToTeam(playerName);
 		
 		if (this.gameEvent != null){
-			this.gameEvent.teamJoinEvent(teamName, playerName);
+			this.gameEvent.teamJoinEvent(teamName, player);
 		}
 	}
 	

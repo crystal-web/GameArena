@@ -1,6 +1,7 @@
 package me.devphp.ga.games.tdm;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,7 +11,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
+import me.devphp.player.PlayerStat;
 import me.devphp.teams.TeamEvent;
 
 
@@ -19,6 +24,7 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 	private TeamDeathMatch tdm;
 	private int p2w;
 	
+	private Map<String, PlayerStat> ps = new HashMap<String, PlayerStat>();
 	public TeamDeathMatchTeamEvent(TeamDeathMatch tdm){
 		this.tdm = tdm;
 	}
@@ -27,13 +33,60 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 		this.p2w = p2w;
 	}
 	
+	private String replaceAll(String input, CharSequence replace, CharSequence... charseq) {
+		CharSequence[] arrayOfCharSequence;
+		int j = (arrayOfCharSequence = charseq).length;
+		for (int i = 0; i < j; i++) {
+			CharSequence chars = arrayOfCharSequence[i];
+			input = input.replace(chars, replace);
+		}
+		return input;
+	}
+	
+	// TODO test
+	private String[] tags = { "kills", "deaths", "streak" };
+	// TODO test
+	private void setScoreboard(Player player){
+		// TODO la scoreboard ne devrai pas etre dans ScoreTeams ?
+		Scoreboard b = Bukkit.getScoreboardManager().getNewScoreboard();
+		Objective ob = b.registerNewObjective("TeamDeathMatch", "dummy");
+		ob.setDisplaySlot(DisplaySlot.SIDEBAR);
+		
+		String stats = "stats"; // Utils.format(getTag("stats"));
+		stats = replaceAll(stats, player.getName(), new CharSequence[] { "{PLAYER}", "{NAME}", "%PLAYER%", "%NAME%" });
+		ob.setDisplayName(stats);
+
+		ob.getScore("Kills").setScore(0);
+		ob.getScore("Deaths").setScore(0);
+		ob.getScore("Streak").setScore(0);
+		player.setScoreboard(b);
+	}
+
+	// TODO test
+	private void updateScoreboard(Player player){
+		Scoreboard b = player.getScoreboard();
+		if ((b == null) || (b.getObjective("TeamDeathMatch") == null)) {
+			this.setScoreboard(player);
+		}
+	
+		
+		Objective ob = b.getObjective("TeamDeathMatch");
+		ob.getScore("Kills").setScore(ps.get(player.getName().toString()).getKill());
+		ob.getScore("Deaths").setScore(ps.get(player.getName().toString()).getDeath());
+		ob.getScore("Streak").setScore(ps.get(player.getName().toString()).getStreak());
+	}
+	
+	
 	@Override
 	public void teamCreatedEvent(String teamName) {
 		this.tdm.scoreTeams.createTeam(teamName);
 	}
 
 	@Override
-	public void teamJoinEvent(String teamName, String playerName) {
+	public void teamJoinEvent(String teamName, Player player) {
+		setScoreboard(player);
+		ps.put(player.getName().toString(), new PlayerStat());
+		
 		// test le nombre de joueur est ok 
 		int min = this.tdm.tm.getMinTeamSize();
 		
@@ -56,6 +109,8 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 				Player death = event.getEntity();
 				// Ici on évite aussi les nullpointerexception ^^ 
 				if (this.tdm.tm.isPlayerInTeam(death.getName().toString())){
+					ps.get(killer.getName().toString()).kill();
+					updateScoreboard(killer);
 					
 					// Ajout des points a l'equipe
 					this.tdm.scoreTeams.incrementTeamPoint(teamName);
@@ -90,8 +145,6 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 				  player.teleport(teamSpawn);
 			  }
 			}.runTaskLater(this.tdm.plugin, 20L);
-			
-		
 	}
 
 
@@ -99,12 +152,12 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 	@Override
 	public void teamLeaveEvent(String teamName, String playerName) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void teamDeathEvent(String teamName, String playerName, PlayerDeathEvent event) {
-		// TODO Auto-generated method stub
-		
+		Player player = event.getEntity();
+		ps.get(player.getName().toString()).death();
+		updateScoreboard(player);
 	}
 }
