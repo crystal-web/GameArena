@@ -35,8 +35,6 @@ public class TeamDeathMatch implements ArenaInterface{
 	private TeamDeathMatchTeamEvent teamEvent;
 
 	public boolean gamestarted = false;
-	public long starttime;
-	public int gametime = 300;
 	
 	private HashMap<String, PlayerInventory> playerInventory;
 	private HashMap<String, Float> playerXp;
@@ -51,9 +49,7 @@ public class TeamDeathMatch implements ArenaInterface{
 		this.teamEvent	= new TeamDeathMatchTeamEvent(this);
 		this.tm			= new TeamManager(this.plugin, this.teamEvent);
 		
-		
-		
-		// ICI le code
+
 		this.config		= this.plugin.getConfig();
 		this.reset();
 		
@@ -98,8 +94,6 @@ public class TeamDeathMatch implements ArenaInterface{
 
 	public boolean startGame(){
 		// Temps en seconde
-		Date date= new Date();
-		this.starttime = new Timestamp(date.getTime()).getTime();
 		this.broadcastMessage("===== Team Death Match =====");
 		this.broadcastMessage("Team Death Match ready. Teleport player on spawn");
 
