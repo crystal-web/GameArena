@@ -21,7 +21,9 @@ import me.devphp.iPlugin;
 
 
 /**
- *
+ * teamJoinEvent ok
+ * teamCreateEvent ok
+ * 
  * @author Devphp
  */
 public class TeamManager {
@@ -38,9 +40,8 @@ public class TeamManager {
 	TeamEvent gameEvent;
 	
 	
-	public TeamManager(iPlugin plugin, TeamEvent game) {
+	public TeamManager(iPlugin plugin) {
 		this.plugin			= plugin;
-		this.gameEvent		= game;
 		this.teams			= new HashMap<String, Team>();
 		this.playersTeam	= new HashMap<String, String>();
 		
@@ -55,6 +56,9 @@ public class TeamManager {
 			.registerEvents(new TeamPlayerListener(this), (Plugin) this.plugin);
 	}
 	
+	public void setEventHandler(TeamEvent event){
+		this.gameEvent		= event;
+	}
 	
 	public void defineSpawn(String team, Location location) {
 		// TODO Auto-generated method stub
@@ -130,7 +134,9 @@ public class TeamManager {
 			return;
 		}
 		this.teams.put(teamName, new Team(teamName));
-		this.gameEvent.teamCreatedEvent(teamName);
+		if (this.gameEvent != null){
+			this.gameEvent.teamCreatedEvent(teamName);
+		}
 	}
 	
 	/**
@@ -201,7 +207,10 @@ public class TeamManager {
 		player.sendMessage(this.plugin.getPrefix() + 
 				"You join " + ChatColor.GOLD + teamName + ChatColor.RESET + " !");
 		team.addToTeam(playerName);
-		this.gameEvent.teamJoinEvent(teamName, playerName);
+		
+		if (this.gameEvent != null){
+			this.gameEvent.teamJoinEvent(teamName, playerName);
+		}
 	}
 	
 	/**

@@ -44,12 +44,14 @@ public class TeamDeathMatch implements ArenaInterface{
 	YamlConfiguration config;
 	private boolean hasReady = false;
 	
+	ScoreTeams scoreTeams = new ScoreTeams();
+	
 	public TeamDeathMatch(Core plugin, String arena) {
 		this.arena		= arena;
 		this.plugin		= plugin;
+		this.tm			= new TeamManager(this.plugin);
 		this.teamEvent	= new TeamDeathMatchTeamEvent(this);
-		this.tm			= new TeamManager(this.plugin, this.teamEvent);
-
+		
 		this.config		= this.plugin.getConfig();
 		this.reset();
 		
@@ -64,6 +66,8 @@ public class TeamDeathMatch implements ArenaInterface{
 			// TODO et le temps ?
 		}
 		// threadRunningGame();
+		
+		this.tm.setEventHandler(this.teamEvent);
 	}
 	
 	public void reset(){		
@@ -130,8 +134,7 @@ public class TeamDeathMatch implements ArenaInterface{
 	public void broadcastScore(){
 		Map<Integer, String> unsortMap = new HashMap<Integer, String>();
 		for (String teamName : tm.getTeams()){
-			this.plugin.log.info(teamName + " " + this.teamEvent.teamPoint.get(teamName));
-			unsortMap.put(this.teamEvent.teamPoint.get(teamName), teamName);
+			unsortMap.put(this.scoreTeams.getTeamPoint(teamName), teamName);
 		}
 		
 		Map<Integer, String> treeMap = new TreeMap<Integer, String>(

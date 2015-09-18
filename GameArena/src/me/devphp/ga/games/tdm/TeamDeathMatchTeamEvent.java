@@ -17,31 +17,19 @@ import me.devphp.teams.TeamEvent;
 
 public class TeamDeathMatchTeamEvent implements TeamEvent {
 	private TeamDeathMatch tdm;
-	HashMap<String, Integer> teamPoint;
 	private int p2w;
 	
 	public TeamDeathMatchTeamEvent(TeamDeathMatch tdm){
 		this.tdm = tdm;
-		this.teamPoint = new HashMap<String, Integer>();
 	}
 	
 	public void setPoint2wins(Integer p2w){
 		this.p2w = p2w;
 	}
 	
-	private void incrementPoint(String teamName){
-		int pt = this.teamPoint.get(teamName);
-		pt++;
-		this.teamPoint.put(teamName, pt);
-		
-		if (pt >= this.p2w){
-			this.tdm.endGame();
-		}
-	}
-	
 	@Override
 	public void teamCreatedEvent(String teamName) {
-		this.teamPoint.put(teamName, 0);
+		this.tdm.scoreTeams.createTeam(teamName);
 	}
 
 	@Override
@@ -59,18 +47,6 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 	}
 
 	@Override
-	public void teamLeaveEvent(String teamName, String playerName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void teamDeathEvent(String teamName, String playerName, PlayerDeathEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void teamKillEvent(String teamName, String playerName, PlayerDeathEvent event) {		
 		if (event.getEntity().getKiller() instanceof Player){
 			Player killer = event.getEntity().getKiller();
@@ -81,16 +57,22 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 				// Ici on évite aussi les nullpointerexception ^^ 
 				if (this.tdm.tm.isPlayerInTeam(death.getName().toString())){
 					
-					this.incrementPoint(teamName);
-
+					// Ajout des points a l'equipe
+					this.tdm.scoreTeams.incrementTeamPoint(teamName);
+					
 					this.tdm.broadcastMessage("[" + ChatColor.GOLD + teamName + ChatColor.RESET + "]"
 							+ killer.getName().toString() + " has killed [" + ChatColor.GOLD
 							+ this.tdm.tm.getPlayersTeamName(death.getName().toString()) + ChatColor.RESET + "]"
 							+ death.getName().toString());
+
+					// Testy si le score permet l'arret de jeu
+					if (this.tdm.scoreTeams.getTeamPoint(teamName) >= this.p2w){
+						this.tdm.endGame();
+					}
 				}
 			}
 		
-		}		
+		}
 	}
 
 	@Override
@@ -113,4 +95,16 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 	}
 
 
+	
+	@Override
+	public void teamLeaveEvent(String teamName, String playerName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void teamDeathEvent(String teamName, String playerName, PlayerDeathEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }
