@@ -49,7 +49,6 @@ public class TeamDeathMatch implements ArenaInterface{
 		this.plugin		= plugin;
 		this.teamEvent	= new TeamDeathMatchTeamEvent(this);
 		this.tm			= new TeamManager(this.plugin, this.teamEvent);
-		
 
 		this.config		= this.plugin.getConfig();
 		this.reset();

@@ -114,6 +114,7 @@ public class TeamManager {
 			}
 		}
 		teams.clear();
+		this.teams			= new HashMap<String, Team>();
 		this.playersTeam	= new HashMap<String, String>();
 	}
 	
