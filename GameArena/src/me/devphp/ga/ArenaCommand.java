@@ -273,6 +273,8 @@ public class ArenaCommand implements CommandExecutor{
 		if (player.hasPermission("gamearena.creator") || !player.isOp()){
 			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena create <arena name>" + ChatColor.RESET + " for create arena");
 			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena load <arena name>" + ChatColor.RESET + " for load arena");
+			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena mode list" + ChatColor.RESET + " for list all mode available");
+			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena mode <mode name>" + ChatColor.RESET + " for select mode");
 		}
 	}
 
