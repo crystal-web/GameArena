@@ -18,6 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.devphp.ga.ArenaGame;
 import me.devphp.ga.ArenaInterface;
@@ -65,16 +66,7 @@ public class TeamDeathMatch implements ArenaInterface{
 		// threadRunningGame();
 	}
 	
-	private void reset(){
-		for (String teamName : this.tm.getTeams()){
-			for(String player : this.tm.getTeam(teamName).getPlayerList()){
-				Player pl = Bukkit.getPlayer(player);
-				if (pl != null){
-					pl.teleport(this.playerPreviousLocations.get(player));
-				}
-			}
-		}
-		
+	public void reset(){		
 		this.playerPreviousLocations	= new HashMap<String, Location>();
 		this.playerInventory			= new HashMap<String, PlayerInventory>();
 		this.playerXp					= new HashMap<String, Float>();
@@ -107,8 +99,12 @@ public class TeamDeathMatch implements ArenaInterface{
 				}
 			}
 		}
-
+		
 		this.teleport();
+		
+		if (this.config.contains("arena." + this.arena + ".gametime")){
+			BukkitTask endTimer = new TeamDeathMatchTimer(this.plugin, this, this.config.getInt("arena." + this.arena + ".gametime")).runTaskTimer(this.plugin, 10, 20);
+		}
 		return true;
 	}
 	
@@ -122,12 +118,12 @@ public class TeamDeathMatch implements ArenaInterface{
 			for(String player : this.tm.getTeam(teamName).getPlayerList()){
 				Player pl = Bukkit.getPlayer(player);
 				if (pl != null){
-					pl.teleport(this.playerPreviousLocations.get(player));
+					if (this.playerPreviousLocations.containsKey(player)){
+						pl.teleport(this.playerPreviousLocations.get(player));
+					}
 				}
 			}
 		}
-		
-		this.reset();
 	}
 
 	
@@ -306,7 +302,7 @@ public class TeamDeathMatch implements ArenaInterface{
 					player.sendMessage(this.plugin.getPrefix() + "Team created and spawn defined");
 				break;
 				case "p2w":
-					if (Integer.valueOf(args[2].toString()) == 0){
+					if (Integer.valueOf(args[2].toString()) <= 0){
 						throw new Exception("Oops argument is not a number or is equal 0");
 					}
 					
@@ -314,6 +310,19 @@ public class TeamDeathMatch implements ArenaInterface{
 					
 					player.sendMessage(this.plugin.getPrefix() + "===== Team Death Match =====");
 					player.sendMessage(this.plugin.getPrefix() + "Point to wins defined");
+				break;
+				case "gametime":
+					if (Integer.valueOf(args[2].toString()) <= 0){
+						throw new Exception("Oops argument is not a number or is equal 0");
+					}
+					
+					this.config.set("arena." + this.arena + ".gametime", Integer.valueOf(args[2].toString()));
+					
+					player.sendMessage(this.plugin.getPrefix() + "===== Team Death Match =====");
+					player.sendMessage(this.plugin.getPrefix() + "Game time defined");
+				break;
+				default:
+					this.sendUsage(player);
 				break;
 			}
 		}
