@@ -347,6 +347,10 @@ public class TeamDeathMatch implements ArenaInterface{
 			throw new Exception("Use " + ChatColor.GOLD + "/arena set p2w <number of point>" + ChatColor.RESET + " set point needed to wins games");
 		}
 		
+		if (!this.config.contains("arena." + this.arena + ".gametime")){
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set gametime <time in second>" + ChatColor.RESET + " set timeout of the game");
+		}
+		
 		try {
 			this.config.save(this.plugin.configFile);
 		} catch (IOException e) {
