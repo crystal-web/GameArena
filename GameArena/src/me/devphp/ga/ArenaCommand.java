@@ -47,14 +47,7 @@ public class ArenaCommand implements CommandExecutor{
 		 */
 		
 		if (args.length < 1){
-			player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
-			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena list" + ChatColor.RESET + " for list all arena available.");
-			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena join <arena name>" + ChatColor.RESET + " to join arena");
-			player.sendMessage(this.plugin.getPrefix() + "========== Admin ==========");
-			if (player.hasPermission("gamearena.creator") || !player.isOp()){
-				player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena create <arena name>" + ChatColor.RESET + " for create arena");
-				player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena load <arena name>" + ChatColor.RESET + " for load arena");
-			}
+			this.usage(player);
 			return true;
 		}
 
@@ -173,8 +166,8 @@ public class ArenaCommand implements CommandExecutor{
 		/**
 		 * Définition du mode de jeu
 		 */
-		} else if (args[0].equalsIgnoreCase("mode")){			
-			if (args[1].equalsIgnoreCase("list")){
+		} else if (args[0].equalsIgnoreCase("mode")){		
+			if (args.length <= 1 || args[1].equalsIgnoreCase("list")){
 				player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
 				
 				for (Gamemode mode : Gamemode.values()) {
@@ -273,8 +266,14 @@ public class ArenaCommand implements CommandExecutor{
 	 * @param player
 	 */
 	private void usage(Player player) {
-		player.sendMessage(this.plugin.getPrefix() + ChatColor.GREEN + "========== SimpleGame ===========");
-		player.sendMessage(this.plugin.getPrefix() + ChatColor.GREEN + "Usage: ");
+		player.sendMessage(this.plugin.getPrefix() + "========== Arena ==========");
+		player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena list" + ChatColor.RESET + " for list all arena available.");
+		player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena join <arena name>" + ChatColor.RESET + " to join arena");
+		player.sendMessage(this.plugin.getPrefix() + "========== Admin ==========");
+		if (player.hasPermission("gamearena.creator") || !player.isOp()){
+			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena create <arena name>" + ChatColor.RESET + " for create arena");
+			player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena load <arena name>" + ChatColor.RESET + " for load arena");
+		}
 	}
 
 }
