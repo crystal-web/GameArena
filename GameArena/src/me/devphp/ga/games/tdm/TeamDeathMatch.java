@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.DisplaySlot;
 
 import me.devphp.ga.ArenaInterface;
 import me.devphp.ga.Core;
@@ -121,6 +122,8 @@ public class TeamDeathMatch implements ArenaInterface{
 				if (pl != null){
 					if (this.playerPreviousLocations.containsKey(player)){
 						pl.teleport(this.playerPreviousLocations.get(player));
+						
+						pl.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 					}
 				}
 			}

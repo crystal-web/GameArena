@@ -58,11 +58,13 @@ public class TeamPlayerListener implements Listener {
 			if ( this.teamManager.isPlayerInTeam(killer.getName().toString()) ){
 				killer.getWorld().playSound(killer.getLocation(), Sound.FALL_BIG,1, 0);
 				this.teamManager.gameEvent.teamKillEvent(this.teamManager.getPlayersTeamName(killer.getName().toString()), killer.getName().toString(), event);
-				
-				if (event.getEntity() instanceof Player){
-					Player death = event.getEntity();
-					this.teamManager.gameEvent.teamDeathEvent(this.teamManager.getPlayersTeamName(death.getName().toString()), death.getName().toString(), event);
-				}
+			}
+		}
+		
+		if (event.getEntity() instanceof Player){
+			Player death = event.getEntity();
+			if ( this.teamManager.isPlayerInTeam(death.getName().toString()) ){
+				this.teamManager.gameEvent.teamDeathEvent(this.teamManager.getPlayersTeamName(death.getName().toString()), death.getName().toString(), event);
 			}
 		}
 	}
