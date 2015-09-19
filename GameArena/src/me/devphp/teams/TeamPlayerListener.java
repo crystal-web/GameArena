@@ -40,8 +40,8 @@ public class TeamPlayerListener implements Listener {
                 
                 if(this.teamManager.isPlayerInTeam(defender.getName()) && this.teamManager.isPlayerInTeam(attacker.getName()))
                 {
-                    if(this.teamManager.getPlayersTeamName(defender.getName())
-                    		.equals(this.teamManager.getPlayersTeamName(attacker.getName()))
+                    if(this.teamManager.getPlayerTeamName(defender.getName())
+                    		.equals(this.teamManager.getPlayerTeamName(attacker.getName()))
                     )
                     {
                         event.setCancelled(true);
@@ -57,14 +57,14 @@ public class TeamPlayerListener implements Listener {
 			Player killer = event.getEntity().getKiller();
 			if ( this.teamManager.isPlayerInTeam(killer.getName().toString()) ){
 				killer.getWorld().playSound(killer.getLocation(), Sound.FALL_BIG,1, 0);
-				this.teamManager.gameEvent.teamKillEvent(this.teamManager.getPlayersTeamName(killer.getName().toString()), killer.getName().toString(), event);
+				this.teamManager.gameEvent.teamKillEvent(this.teamManager.getPlayerTeamName(killer.getName().toString()), killer.getName().toString(), event);
 			}
 		}
 		
 		if (event.getEntity() instanceof Player){
 			Player death = event.getEntity();
 			if ( this.teamManager.isPlayerInTeam(death.getName().toString()) ){
-				this.teamManager.gameEvent.teamDeathEvent(this.teamManager.getPlayersTeamName(death.getName().toString()), death.getName().toString(), event);
+				this.teamManager.gameEvent.teamDeathEvent(this.teamManager.getPlayerTeamName(death.getName().toString()), death.getName().toString(), event);
 			}
 		}
 	}

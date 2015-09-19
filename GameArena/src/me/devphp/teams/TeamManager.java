@@ -260,7 +260,7 @@ public class TeamManager {
 		return null;
 	}
 
-	private Team getPlayersTeam(String playerName) {
+	public Team getPlayersTeam(String playerName) {
 		playerName = playerName.toLowerCase();
 		if (playersTeam.containsKey(playerName)) {
 			return teams.get(playersTeam.get(playerName));

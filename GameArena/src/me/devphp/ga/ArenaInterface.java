@@ -11,6 +11,8 @@ public interface ArenaInterface {
 	
 	public boolean join(Player player, String[] args) throws Exception;
 	
+	public void leave(Player player);
+	
 	/**
 	 * Retourne la valeur correspondant a Argument
 	 * @param args

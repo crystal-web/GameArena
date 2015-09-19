@@ -385,4 +385,21 @@ public class TeamDeathMatch implements ArenaInterface{
 		return this.hasReady ;
 	}
 
+	@Override
+	public void leave(Player player) {
+		String playerName = player.getName().toString();
+		
+		if (this.tm.isPlayerInTeam(playerName)){
+			try {
+				String teamName = this.tm.getPlayerTeam(playerName);
+				this.tm.getTeam(teamName).removeFromTeam(playerName);
+			} catch (Exception e) {
+				log.info(e.getMessage());
+				e.printStackTrace();
+			}
+			
+			this.broadcastMessage(player.getName().toString() + " left the game");
+		}
+	}
+
 }

@@ -86,9 +86,32 @@ public class ArenaGame implements ArenaInterface {
 		if (this.hasReady() == false){
 			throw new Exception("Arena is not ready");
 		}
+		
+		/**
+		 * Ca va pas etre facile
+		 * On doit savoir si le joueur est déjà en jeu ou en attente d'y rentré.
+		 * On intéroge playerInArena si il dit oui on poursuit
+		 */
+		if ( this.plugin.playerInArena.containsKey(player.getName().toString()) ){
+			// On test a tout hasard et pour évité le nullpointerexception :)
+			if (this.plugin.games.containsKey( this.plugin.playerInArena.get(player.getName().toString()) )){
+				// on charge la class et force le leave
+				ArenaInterface cur = this.plugin.games.get( this.plugin.playerInArena.get(player.getName().toString()) );
+				cur.leave(player);
+			}
+		}
+		// on enregistre l'arene demandé, si elle n'existe pas, aucun soucis, elle est testé plus haut
+		this.plugin.playerInArena.put(player.getName().toString(), args[1].toString());
 		return this.game.join(player, args);
 	}
 
+	@Override
+	public void leave(Player player) {
+		// on supprime l'enregistrement
+		this.plugin.playerInArena.remove(player.getName().toString());
+		this.game.leave(player);
+	}
+	
 	@Override
 	public String get(String[] args, Player player) throws Exception {
 		if (this.hasReady() == false){
@@ -130,4 +153,5 @@ public class ArenaGame implements ArenaInterface {
 	public void threadRunningGame() {
 		this.game.threadRunningGame();
 	}
+
 }

@@ -26,6 +26,8 @@ public class Core extends JavaPlugin implements iPlugin{
 		
 	// TODO Besoin de performance ? Collection ? ArrayList ?
 	public Map<String, ArenaInterface> games;
+	// Temmoin pour les join/leave
+	public Map<String, String> playerInArena;
 	public File configFile;
 	public YamlConfiguration config;
 	
@@ -38,6 +40,7 @@ public class Core extends JavaPlugin implements iPlugin{
 		this.configFile			 	= new File("plugins/GameArena/config.yml");
 		this.config					= YamlConfiguration.loadConfiguration(this.configFile);
 		this.games					= new HashMap<String, ArenaInterface>();
+		this.playerInArena			= new HashMap<String, String>();
 		
 		if (this.config.contains("arena")){
 			Set<String> arenaList		= this.config.getConfigurationSection("arena").getKeys(false);		

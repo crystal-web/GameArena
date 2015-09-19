@@ -117,7 +117,7 @@ public class TeamDeathMatchTeamEvent implements TeamEvent {
 					
 					this.tdm.broadcastMessage("[" + ChatColor.GOLD + teamName + ChatColor.RESET + "]"
 							+ killer.getName().toString() + " has killed [" + ChatColor.GOLD
-							+ this.tdm.tm.getPlayersTeamName(death.getName().toString()) + ChatColor.RESET + "]"
+							+ this.tdm.tm.getPlayerTeamName(death.getName().toString()) + ChatColor.RESET + "]"
 							+ death.getName().toString());
 
 					// Testy si le score permet l'arret de jeu
