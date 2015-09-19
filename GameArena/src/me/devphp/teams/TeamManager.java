@@ -268,10 +268,10 @@ public class TeamManager {
 		return null;
 	}
 
-	public String getPlayersTeamName(String player) {
-		player = player.toLowerCase();
-		if (playersTeam.containsKey(player)) {
-			return playersTeam.get(player);
+	public String getPlayerTeamName(String playerName) {
+		playerName = playerName.toLowerCase();
+		if (playersTeam.containsKey(playerName)) {
+			return playersTeam.get(playerName);
 		}
 		return null;
 	}
