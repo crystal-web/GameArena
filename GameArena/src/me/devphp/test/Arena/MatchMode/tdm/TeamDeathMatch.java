@@ -1,8 +1,10 @@
 package me.devphp.test.Arena.MatchMode.tdm;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
@@ -413,7 +415,32 @@ public class TeamDeathMatch implements ArenaInterface {
 
 	@Override
 	public boolean testing() throws Exception {
-		// TODO Auto-generated method stub
+		this.plugin.getLog().info("TeamDeathMatch.testing() called");
+
+		if (!this.config.contains("arena." + this.arena + ".team")){
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
+		}
+		
+		Set<String> key = this.config.getConfigurationSection("arena." + this.arena + ".team").getKeys(false);
+		if (key.size() == 1){
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
+		}
+		
+		if (!this.config.contains("arena." + this.arena + ".p2w")){
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set p2w <number of point>" + ChatColor.RESET + " set point needed to wins games");
+		}
+		
+		if (!this.config.contains("arena." + this.arena + ".gametime")){
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set gametime <time in second>" + ChatColor.RESET + " set timeout of the game");
+		}
+		
+		try {
+			this.config.save(this.plugin.getConfigFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new Exception("Save configuration file fail");
+		}
+		
 		return false;
 	}
 
