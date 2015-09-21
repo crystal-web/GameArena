@@ -177,45 +177,20 @@ public class TeamDeathMatch implements ArenaInterface {
 				}
 			}
 		}
-		
-		
-		/*
-		for (String teamName : this.getTeamManager().getTeamList()){
-			
-//			this.getPlugin().getLog().info( teamName + " " + this.getTeamManager().getTeam(teamName).getPlayerList().toString() );
-			
-			for(String player : this.getTeamManager().getTeam(teamName).getPlayerList()){
 				
-				this.getPlugin().getLog().info( teamName + " " + player );
-				
-				Player pl = (Player) Bukkit.getPlayer(player);
-				if (pl != null){
-					pl.teleport(
-							this.getTeamSpawn(
-								this.getTeamManager().getPlayerTeamName(
-									teamName
-								)
-							)
-						);
-					this.playerData.put(pl.getName().toString(), new PlayerData(pl));
-					this.playerStat.put(pl.getName().toString(), new PlayerStat());
-				}
-
-			}
-		}//*/
-		
 		if (this.config.contains("arena." + this.arena + ".gametime")){
-			//this.timer = new TeamDeathMatchTimer(this, this.config.getInt("arena." + this.arena + ".gametime"));
-			//this.timer.runTaskTimer(this.plugin, /*delay*/ 10, /*period*/20);
+			this.timer = new TeamDeathMatchTimer(this, this.config.getInt("arena." + this.arena + ".gametime"));
+			this.timer.runTaskTimer(this.plugin, /*delay*/ 10, /*period*/20);
 		}
 		
-		try {
+		/*try {
+			// TODO Remove his, is just for test
 			Thread.sleep(10000);
 			this.endGame();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}//*/
 		
 		return true;
 	}
