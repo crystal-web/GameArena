@@ -418,20 +418,20 @@ public class TeamDeathMatch implements ArenaInterface {
 		this.plugin.getLog().info("TeamDeathMatch.testing() called");
 
 		if (!this.config.contains("arena." + this.arena + ".team")){
-			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RED + " define team name");
 		}
 		
 		Set<String> key = this.config.getConfigurationSection("arena." + this.arena + ".team").getKeys(false);
 		if (key.size() == 1){
-			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RESET + " define team name");
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RED + " define team name");
 		}
 		
 		if (!this.config.contains("arena." + this.arena + ".p2w")){
-			throw new Exception("Use " + ChatColor.GOLD + "/arena set p2w <number of point>" + ChatColor.RESET + " set point needed to wins games");
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set p2w <number of point>" + ChatColor.RED + " set point needed to wins games");
 		}
 		
 		if (!this.config.contains("arena." + this.arena + ".gametime")){
-			throw new Exception("Use " + ChatColor.GOLD + "/arena set gametime <time in second>" + ChatColor.RESET + " set timeout of the game");
+			throw new Exception("Use " + ChatColor.GOLD + "/arena set gametime <time in second>" + ChatColor.RED + " set timeout of the game");
 		}
 		
 		try {
@@ -441,7 +441,7 @@ public class TeamDeathMatch implements ArenaInterface {
 			throw new Exception("Save configuration file fail");
 		}
 		
-		return false;
+		return true;
 	}
 
 	@Override
