@@ -21,6 +21,8 @@ import me.devphp.test.Arena.ArenaEventInterface;
 import me.devphp.test.Arena.ArenaInterface;
 
 public class TeamDeathMatch implements ArenaInterface {
+	private String chatHeader = ChatColor.GREEN + "===== " + ChatColor.GOLD + "Team Death Match" + ChatColor.GREEN + " =====";
+	
 	private GameArena plugin;
 	private YamlConfiguration config;
 	private String arena;
@@ -150,7 +152,7 @@ public class TeamDeathMatch implements ArenaInterface {
 	
 	public boolean startGame(){
 		// Temps en seconde
-		this.getTeamManager().broadcast(ChatColor.GREEN + "===== " + ChatColor.GOLD + "Team Death Match" + ChatColor.GREEN + " =====");
+		this.getTeamManager().broadcast(this.chatHeader);
 		this.getTeamManager().broadcast("Team Death Match ready. Teleport player on spawn");
 
 		
@@ -197,7 +199,7 @@ public class TeamDeathMatch implements ArenaInterface {
 	
 	
 	public void endGame(){		
-		this.getTeamManager().broadcast(ChatColor.GREEN + "===== " + ChatColor.GOLD + "Team Death Match" + ChatColor.GREEN + " =====");
+		this.getTeamManager().broadcast(this.chatHeader);
 		this.getTeamManager().broadcast("Congratulation. The game is now finish. Thanks for participation.");
 		this.broadcastScore();
 
@@ -370,6 +372,43 @@ public class TeamDeathMatch implements ArenaInterface {
 	@Override
 	public void set(String[] args, Player player) throws Exception {
 
+		if (args.length == 3){
+			
+			switch(args[1].toString()){
+				case "team":
+					this.config.set("arena." + this.arena + ".team." + args[2].toString() + ".w", player.getLocation().getWorld().getName().toString());
+					this.config.set("arena." + this.arena + ".team." + args[2].toString() + ".x", player.getLocation().getX());
+					this.config.set("arena." + this.arena + ".team." + args[2].toString() + ".y", player.getLocation().getY());
+					this.config.set("arena." + this.arena + ".team." + args[2].toString() + ".z", player.getLocation().getZ());
+
+					player.sendMessage(this.plugin.getPrefix() + this.chatHeader);
+					player.sendMessage(this.plugin.getPrefix() + "Team created and spawn defined");
+				break;
+				case "p2w":
+					if (Integer.valueOf(args[2].toString()) <= 0){
+						throw new Exception("Oops argument is not a number or is equal 0");
+					}
+					
+					this.config.set("arena." + this.arena + ".p2w", Integer.valueOf(args[2].toString()));
+					
+					player.sendMessage(this.plugin.getPrefix() + this.chatHeader);
+					player.sendMessage(this.plugin.getPrefix() + "Point to wins defined");
+				break;
+				case "gametime":
+					if (Integer.valueOf(args[2].toString()) <= 0){
+						throw new Exception("Oops argument is not a number or is equal 0");
+					}
+					
+					this.config.set("arena." + this.arena + ".gametime", Integer.valueOf(args[2].toString()));
+					
+					player.sendMessage(this.plugin.getPrefix() + this.chatHeader);
+					player.sendMessage(this.plugin.getPrefix() + "Game time defined");
+				break;
+				default:
+					this.sendUsage(player);
+				break;
+			}
+		}
 	}
 
 	@Override
