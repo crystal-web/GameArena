@@ -8,7 +8,7 @@ public class PlayerStat {
 	
 	public void setKill(int kill) {
 		this.kill = kill;
-	}
+	} 
 	
 	public int getKill(){
 		return this.kill;
@@ -24,7 +24,7 @@ public class PlayerStat {
 	}
 	
 	public int getStreak(){
-		return this.streakActual;
+		return (this.streakActual == 0) ? this.streak : this.streakActual;
 	}
 	
 	public void streak(){

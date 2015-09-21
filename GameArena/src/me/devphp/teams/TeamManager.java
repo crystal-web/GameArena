@@ -8,14 +8,11 @@ package me.devphp.teams;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import me.devphp.iPlugin;
 
@@ -28,7 +25,6 @@ import me.devphp.iPlugin;
  */
 public class TeamManager {
 	private iPlugin plugin;
-	public Logger log = Logger.getLogger("Minecraft");
 	
 	// les equipes
 	private Map<String, Team> teams;
@@ -47,22 +43,12 @@ public class TeamManager {
 		
 		this.minTeamSize	= 1;
 		this.maxTeamSize	= 4;
-		
-		// TODO A tester
-		this.plugin
-			.getPlugin()
-			.getServer()
-			.getPluginManager()
-			.registerEvents(new TeamPlayerListener(this), (Plugin) this.plugin);
 	}
 	
 	public void setEventHandler(TeamEvent event){
 		this.gameEvent		= event;
 	}
 	
-	public void defineSpawn(String team, Location location) {
-		// TODO Auto-generated method stub
-	}
 
 	/**
 	 * Propriété
@@ -127,14 +113,13 @@ public class TeamManager {
 	 * @param teamName
 	 */
 	public void createTeam(String teamName) {
-		teamName = teamName.toLowerCase();
 		if (this.teamExists(teamName)) {
-			this.log.info(this.plugin.getPrefixNoColor() + 
-					"Error, this team name already exists...");
+			this.plugin.getLog().info("Error, this team name already exists...");
 			return;
 		}
 		this.teams.put(teamName, new Team(teamName));
 		if (this.gameEvent != null){
+			this.plugin.getLog().info("GameEvent.teamCreatedEvent is not null send event");
 			this.gameEvent.teamCreatedEvent(teamName);
 		}
 	}
@@ -145,7 +130,6 @@ public class TeamManager {
 	 * @return boolean
 	 */
 	public boolean teamExists(String teamName) {
-		teamName = teamName.toLowerCase();
 		return teams.containsKey(teamName);
 	}
 	
@@ -153,10 +137,10 @@ public class TeamManager {
 	 * returne la liste des équipes
 	 * @return Set<String>
 	 */
-	public Set<String> getTeams(){
+	public Set<String> getTeamList(){
 		return this.teams.keySet();
 	}
-
+	
 	/**
 	 * retourne le nombre de team
 	 * @return int
@@ -170,9 +154,7 @@ public class TeamManager {
 	 * @param teamName
 	 * @return Team
 	 */
-	public Team getTeam(String teamName) {
-		teamName = teamName.toLowerCase();
-		
+	public Team getTeam(String teamName) {		
 		if (this.teamExists(teamName)) {
 			return this.teams.get(teamName);
 		}
@@ -187,35 +169,30 @@ public class TeamManager {
 	}
 	
 	public void joinTeam(String playerName, String teamName) {
-		teamName = teamName.toLowerCase();
-		playerName = playerName.toLowerCase();
 		Team team = this.getTeam(teamName);
 		Player player = Bukkit.getPlayer(playerName);
 		if (player == null) {
-			this.log.severe(this.plugin.getPrefixNoColor() + "joinTeam args addPlayer is null, player is offline ?");
+			this.plugin.getLog().severe("joinTeam args addPlayer is null, player is offline ?");
 			return;
 		}
 
 		if (this.isPlayerInTeam(playerName)) {
-			player.sendMessage(this.plugin.getPrefix() + ChatColor.RED
-					+ "You are already in a team!");
+			player.sendMessage(this.plugin.getPrefix() + ChatColor.RED + "You are already in a team!");
 			return;
 		}
 		
 		if (team.getTeamCount() >= this.maxTeamSize ) {
-			player.sendMessage(this.plugin.getPrefix() + ChatColor.RED + "Team "
-					+ ChatColor.GOLD + teamName + ChatColor.RESET + " is full.");
+			player.sendMessage(this.plugin.getPrefix() + ChatColor.RED + "Team " + ChatColor.GOLD + teamName + ChatColor.RESET + " is full.");
 			return;
 		}
 
-		
 		this.playersTeam.put(playerName, teamName);
 		
-		player.sendMessage(this.plugin.getPrefix() + 
-				"You join " + ChatColor.GOLD + teamName + ChatColor.RESET + " !");
-		team.addToTeam(playerName);
+		player.sendMessage(this.plugin.getPrefix() + "You join " + ChatColor.GOLD + teamName + ChatColor.RESET + " !");
+		team.addToTeam(player);
 		
 		if (this.gameEvent != null){
+			this.plugin.getLog().info("GameEvent.teamJoinEvent is not null send event");
 			this.gameEvent.teamJoinEvent(teamName, player);
 		}
 	}
@@ -230,7 +207,6 @@ public class TeamManager {
 	 * @return boolean
 	 */
 	public boolean isPlayerInTeam(String playerName) {
-		playerName = playerName.toLowerCase();
 		return this.playersTeam.containsKey(playerName);
 	}
 	
@@ -241,7 +217,6 @@ public class TeamManager {
 	 * @throws Exception
 	 */
 	public String getPlayerTeam(String playerName) throws Exception{
-		playerName = playerName.toLowerCase();
 		if (!this.isPlayerInTeam(playerName)){
 			throw new Exception("You are not in team");
 		}
@@ -253,7 +228,7 @@ public class TeamManager {
 	 * @param playerName
 	 * @return
 	 */
-	public String[] getPlayersTeamList(String playerName) {
+	public Map<String, Player> getPlayersTeamList(String playerName) {
 		if (this.isPlayerInTeam(playerName)) {
 			return this.getPlayersTeam(playerName).getPlayerList();
 		}
@@ -261,7 +236,6 @@ public class TeamManager {
 	}
 
 	public Team getPlayersTeam(String playerName) {
-		playerName = playerName.toLowerCase();
 		if (playersTeam.containsKey(playerName)) {
 			return teams.get(playersTeam.get(playerName));
 		}
@@ -269,7 +243,6 @@ public class TeamManager {
 	}
 
 	public String getPlayerTeamName(String playerName) {
-		playerName = playerName.toLowerCase();
 		if (playersTeam.containsKey(playerName)) {
 			return playersTeam.get(playerName);
 		}
@@ -286,7 +259,6 @@ public class TeamManager {
 	 * @param message
 	 */
 	public void chatInTeam(String sendPlayer, String message) {
-		sendPlayer = sendPlayer.toLowerCase();
 		Player player = Bukkit.getPlayer(sendPlayer);
 		if (player == null || !player.isOnline()) {
 			return;
@@ -295,21 +267,26 @@ public class TeamManager {
 		if (playersTeam.containsKey(sendPlayer)) {
 			Team team = this.getPlayersTeam(sendPlayer);
 			if (team != null) {
+				this.plugin.getLog().info("TeamManager.sendTeamChat is not null send");
 				team.sendTeamChat(message, sendPlayer);
 			}
 		} else {
-			player.sendMessage(this.plugin.getPrefix() + ChatColor.RED
-					+ "You are not in a party.");
+			player.sendMessage(this.plugin.getPrefix() + ChatColor.RED + "You are not in a party.");
 		}
 	}
 	
 	public void sendTeamMessage(String teamName, String message) {
-		teamName = teamName.toLowerCase();
 		Team team = this.getTeam(teamName);
 		if (team != null) {
+			this.plugin.getLog().info("TeamManager.sendTeamMessage is not null send");
 			team.sendTeamMessage(message);
 		}
+	}
 
+	public void broadcast(String message) {
+		for (String teamName : this.teams.keySet()){
+			this.sendTeamMessage(teamName, message);
+		}
 	}
 
 }

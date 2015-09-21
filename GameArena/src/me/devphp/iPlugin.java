@@ -16,4 +16,5 @@ public interface iPlugin {
 	public JavaPlugin getPlugin();
 	public YamlConfiguration getConfig();
 	public File getConfigFile();
+	public PLog getLog();
 }

@@ -1,6 +1,8 @@
 package me.devphp.teams;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -11,95 +13,81 @@ public class Team {
 	private String teamName;
 	private ArrayList<String> joinedPlayers;
 	public Logger log = Logger.getLogger("Minecraft");
+	private Map<String, Player> joinedPlayer;
 	
 	public Team(String teamName)
     {
         this.teamName = teamName;
         this.joinedPlayers = new ArrayList<String>();
+        this.joinedPlayer = new HashMap<String, Player>();
     }
 	
-    public void addToTeam(String player)
+	public String getTeamName() {
+		return this.teamName;
+	}
+	
+    public int getTeamCount()
+    {
+        //return this.joinedPlayers.size();
+    	return this.joinedPlayer.size();
+    }
+    
+    public Map<String, Player> getPlayerList()
+    {
+    	//return joinedPlayers;
+    	return this.joinedPlayer;
+    }
+        
+    public void addToTeam(Player player)
     {
         if(player == null){
-        	log.info("[me.devphp.team] args player is null");
+        	log.severe("[me.devphp.teams] args player is null");
         	return;
         }
         
-        if(!isInTeam(player)){
+        if(!isInTeam(player.getName().toString())){
         	sendTeamMessage(player + " has joined the team.");
-            joinedPlayers.add(player);
+            joinedPlayer.put(player.getName().toString(), player);
         }
     }
 
 	public void removeFromTeam(String playerName)
     {
-        for(int i = 0; i < joinedPlayers.size(); i ++)
-        {
-            String thisPlayer = joinedPlayers.get(i);
-            if(thisPlayer.equals(playerName))
-            {
-                joinedPlayers.remove(i);
-                Player player = Bukkit.getPlayer(playerName);
-                if(player != null && player.isOnline()) {
-                    player.sendMessage(ChatColor.RED + "You are no longer in a team.");
-                }
-                
-                this.sendTeamMessage(ChatColor.GOLD + thisPlayer + ChatColor.RESET + " has left the team.");
-                return;
-            }
-        }
+		if (this.joinedPlayer.containsKey(playerName)){
+			this.joinedPlayer.remove(playerName);
+			this.sendTeamMessage(ChatColor.GOLD + playerName + ChatColor.RESET + " has left the team.");
+		}
     }
-
-    public boolean isInTeam(String playerName)
-    {
-        for(int i = 0; i < this.joinedPlayers.size(); i++)
-        {
-            String thisPlayer = this.joinedPlayers.get(i);
-            if(thisPlayer.equals(playerName))
-                return true;
-        }
-        return false;
-    }
-    
-    public void sendTeamChat(String message, String srcPlayer)
-    {    
-    	this.sendTeamMessage(srcPlayer + ": " + message);
-    }
-    
-    public void sendTeamMessage(String message) {
-        for(int i = 0; i < this.joinedPlayers.size(); i ++)
-        {
-            Player player = Bukkit.getPlayer(this.joinedPlayers.get(i));
-            if(player!= null && player.isOnline()){
-                player.sendMessage(ChatColor.GREEN + "[" + this.getTeamName() + "] " + ChatColor.RESET + message);
-            }
-        }
-	}
-    
-    
-    public String[] getPlayerList()
-    {
-        String[] list = new String[joinedPlayers.size()];
-        for(int i = 0; i < joinedPlayers.size(); i ++)
-        {
-            list[i] = joinedPlayers.get(i);
-        }
-        return list;
-    }
-    
-    public int getTeamCount()
-    {
-        return this.joinedPlayers.size();
-    }
-
-	public String getTeamName() {
-		return this.teamName;
-	}
 	
     public void removeAllFromTeam()
     {
-        this.sendTeamMessage("Team is being disbanded...");
-        joinedPlayers.clear();
+        joinedPlayer.clear();
+    }
+    
+    public boolean isInTeam(String playerName)
+    {
+    	return this.joinedPlayer.containsKey(playerName);
     }
 
+	public void sendTeamChat(String message, String sendPlayer) {
+		for (String playerName : this.joinedPlayer.keySet()){
+			if (this.joinedPlayer.containsKey(playerName)){
+				Player player = this.joinedPlayer.get(playerName);
+				if (player.isOnline()){
+	                player.sendMessage(ChatColor.GREEN + "[" + this.getTeamName() + "] " + sendPlayer + " " + ChatColor.RESET + message);
+	            }
+			}
+		}
+	}
+    
+    public void sendTeamMessage(String message) {
+    	for (String playerName : this.joinedPlayer.keySet()){
+			if (this.joinedPlayer.containsKey(playerName)){
+				Player player = this.joinedPlayer.get(playerName);
+				if (player.isOnline()){
+					player.sendMessage(ChatColor.GREEN + "[" + this.getTeamName() + "] " + ChatColor.RESET + message);
+	            }
+			}
+    	}
+	}
 }
