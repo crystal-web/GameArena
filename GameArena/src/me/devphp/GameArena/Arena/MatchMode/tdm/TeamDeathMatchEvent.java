@@ -3,7 +3,9 @@ package me.devphp.GameArena.Arena.MatchMode.tdm;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -27,6 +29,32 @@ public class TeamDeathMatchEvent implements ArenaEventInterface {
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (!this.arena.hasReady()){return;}
+		
+        if (event.isCancelled()){
+        	return;
+        }
+		
+        if(event instanceof EntityDamageByEntityEvent)
+        {
+            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+            Entity sender = e.getDamager();
+            Entity reciever = e.getEntity();
+            if(sender instanceof Player && reciever instanceof Player)
+            {
+                Player attacker = (Player) sender;
+                Player defender = (Player) reciever;
+                
+                if(this.arena.getTeamManager().isPlayerInTeam(defender.getName()) && this.arena.getTeamManager().isPlayerInTeam(attacker.getName()))
+                {
+                    if(this.arena.getTeamManager().getPlayerTeamName(defender.getName())
+                    		.equals(this.arena.getTeamManager().getPlayerTeamName(attacker.getName()))
+                    )
+                    {
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        }
 	}
 
 	@Override
