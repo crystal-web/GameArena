@@ -9,9 +9,12 @@ import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import me.devphp.player.PlayerData;
 import me.devphp.player.PlayerStat;
@@ -157,11 +160,13 @@ public class TeamDeathMatch implements ArenaInterface {
 		this.getTeamManager().broadcast(this.chatHeader);
 		this.getTeamManager().broadcast("Team Death Match ready. Teleport player on spawn");
 
-		
-		
+		/**
+		 * Parcourt la liste des équipes
+		 */
 		for (String teamName : this.getTeamManager().getTeamList()){
 			this.getPlugin().getLog().info("TeamName == " + teamName);
 			Team team = this.getTeamManager().getTeam(teamName);
+			
 			Map<String, Player> playerList = team.getPlayerList();
 			for (String playerName : playerList.keySet()){
 				if (playerList.containsKey(playerName)){
@@ -172,10 +177,12 @@ public class TeamDeathMatch implements ArenaInterface {
 						String o = (currentPlayer.isOnline()) ? "y" : "n";
 						this.getPlugin().getLog().info("playerName == " + playerName + " online:" + o);
 						if (currentPlayer.isOnline()){
-							this.getPlugin().getLog().info("teleport test");	
-							currentPlayer.teleport( this.getTeamSpawn(teamName) );
+							this.getPlugin().getLog().info("teleport to spawn");
 							this.playerData.put(currentPlayer.getName().toString(), new PlayerData(currentPlayer));
-							this.playerStat.put(currentPlayer.getName().toString(), new PlayerStat());						
+							this.playerStat.put(currentPlayer.getName().toString(), new PlayerStat());
+							
+							this.clearPlayerStat(currentPlayer);
+							currentPlayer.teleport( this.getTeamSpawn(teamName) );
 						}
 					}
 				}
@@ -237,6 +244,12 @@ public class TeamDeathMatch implements ArenaInterface {
 										String stat = "You made " + kill + " victims , your best series is " + streak + ", you're dead " + death + " times. Your ratio is " + String.format("%.2f", rate);
 										player.sendMessage(stat);
 									}
+									
+									PlayerData pd = this.playerData.get(player.getName().toString());
+									if (pd != null){
+										pd.restore();
+										this.playerData.remove(player.getName().toString());
+									}
 									this.leave(player);
 								}
 				                
@@ -274,6 +287,26 @@ public class TeamDeathMatch implements ArenaInterface {
 			this.getTeamManager().broadcast(i + ": " + entry.getValue() + " " + entry.getKey() + " pts");
 		}
 	}
+	
+	
+	private void clearPlayerStat(Player player){
+		/**
+		 * Remove all potion effect
+		 */
+		for (PotionEffect effect : player.getActivePotionEffects()){
+	        player.removePotionEffect(effect.getType());
+		}
+
+		player.getWorld().setPVP(true);
+		player.getInventory().clear();
+		player.getInventory().setArmorContents(null);
+		player.setGameMode(GameMode.SURVIVAL);
+		player.setFlying(false);
+		player.setFoodLevel(20);
+		player.setHealth(20.00);
+		player.setLevel(0);
+	}
+	
 
 	@Override
 	public boolean hasReady() {
