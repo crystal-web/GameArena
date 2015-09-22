@@ -1,4 +1,4 @@
-package me.devphp.test.Arena.MatchMode.tdm;
+package me.devphp.GameArena.Arena.MatchMode.tdm;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -18,14 +18,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import me.devphp.GameArena.GameArena;
+import me.devphp.GameArena.Arena.ArenaEventInterface;
+import me.devphp.GameArena.Arena.ArenaInterface;
 import me.devphp.player.PlayerData;
 import me.devphp.player.PlayerStat;
 import me.devphp.player.ScoreTeams;
 import me.devphp.teams.Team;
 import me.devphp.teams.TeamManager;
-import me.devphp.test.GameArena;
-import me.devphp.test.Arena.ArenaEventInterface;
-import me.devphp.test.Arena.ArenaInterface;
 import me.devphp.utils.InventorySerializer;
 import me.devphp.utils.Kits;
 

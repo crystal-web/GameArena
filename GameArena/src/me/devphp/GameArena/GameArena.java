@@ -1,4 +1,4 @@
-package me.devphp.test;
+package me.devphp.GameArena;
 
 import java.io.File;
 import java.util.HashMap;
@@ -10,9 +10,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.devphp.iPlugin;
+import me.devphp.GameArena.Arena.ArenaInterface;
+import me.devphp.GameArena.Arena.ArenaMaster;
 import me.devphp.PLog;
-import me.devphp.test.Arena.ArenaInterface;
-import me.devphp.test.Arena.ArenaMaster;
 
 
 public class GameArena extends JavaPlugin implements iPlugin {

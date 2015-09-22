@@ -1,10 +1,10 @@
-package me.devphp.test.Arena;
+package me.devphp.GameArena.Arena;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import me.devphp.test.GameArena;
-import me.devphp.test.Arena.MatchMode.tdm.TeamDeathMatch;
+import me.devphp.GameArena.GameArena;
+import me.devphp.GameArena.Arena.MatchMode.tdm.TeamDeathMatch;
 
 public class ArenaMaster implements ArenaInterface {
 	private GameArena plugin;

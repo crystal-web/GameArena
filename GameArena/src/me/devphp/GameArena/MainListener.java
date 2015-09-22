@@ -1,4 +1,4 @@
-package me.devphp.test;
+package me.devphp.GameArena;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,8 +7,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import me.devphp.test.Arena.ArenaEventInterface;
-import me.devphp.test.Arena.ArenaInterface;
+import me.devphp.GameArena.Arena.ArenaEventInterface;
+import me.devphp.GameArena.Arena.ArenaInterface;
 
 /**
  * On écoute les evenements et envois ceux-ci à ArenaEventInterface

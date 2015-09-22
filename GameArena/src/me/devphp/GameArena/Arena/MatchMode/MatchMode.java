@@ -1,4 +1,4 @@
-package me.devphp.test.Arena.MatchMode;
+package me.devphp.GameArena.Arena.MatchMode;
 
 public enum MatchMode {
 	DEATHMATCH("Death Match", "dm", false), 

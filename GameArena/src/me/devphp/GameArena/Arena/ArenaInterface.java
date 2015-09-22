@@ -1,4 +1,4 @@
-package me.devphp.test.Arena;
+package me.devphp.GameArena.Arena;
 
 import org.bukkit.entity.Player;
 

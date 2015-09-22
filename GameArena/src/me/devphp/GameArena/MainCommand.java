@@ -1,4 +1,4 @@
-package me.devphp.test;
+package me.devphp.GameArena;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,11 +17,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.devphp.GameArena.Arena.ArenaInterface;
+import me.devphp.GameArena.Arena.ArenaMaster;
+import me.devphp.GameArena.Arena.MatchMode.MatchMode;
+import me.devphp.GameArena.Arena.MatchMode.tdm.TeamDeathMatch;
 import me.devphp.teams.Team;
-import me.devphp.test.Arena.ArenaInterface;
-import me.devphp.test.Arena.ArenaMaster;
-import me.devphp.test.Arena.MatchMode.MatchMode;
-import me.devphp.test.Arena.MatchMode.tdm.TeamDeathMatch;
 import me.devphp.utils.InventorySerializer;
 
 /**

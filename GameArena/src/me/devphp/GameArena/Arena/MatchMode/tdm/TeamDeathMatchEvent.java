@@ -1,4 +1,4 @@
-package me.devphp.test.Arena.MatchMode.tdm;
+package me.devphp.GameArena.Arena.MatchMode.tdm;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -9,7 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.devphp.test.Arena.ArenaEventInterface;
+import me.devphp.GameArena.Arena.ArenaEventInterface;
 
 public class TeamDeathMatchEvent implements ArenaEventInterface {
 
