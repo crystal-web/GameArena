@@ -35,7 +35,10 @@ public class PlayerData {
         player.setLevel(this.level);
         player.setExp(this.exp);
         player.teleport(this.loc);
-        // TODO add restore potion effect
+
+		for (PotionEffect effect : this.potions){
+			player.addPotionEffect(effect);
+		}
         
     }
 }
