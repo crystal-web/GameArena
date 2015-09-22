@@ -1,20 +1,28 @@
 package me.devphp.test;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.devphp.teams.Team;
 import me.devphp.test.Arena.ArenaInterface;
 import me.devphp.test.Arena.ArenaMaster;
 import me.devphp.test.Arena.MatchMode.MatchMode;
 import me.devphp.test.Arena.MatchMode.tdm.TeamDeathMatch;
+import test.InventorySerializer;
 
 /**
  * Cette classe s'occupe de traiter les requêtes de création d'arene et pour les rejoindre
@@ -70,9 +78,11 @@ public class MainCommand implements CommandExecutor{
 			this.plugin.getLog().info("You are not a player");
 			return false;
 		}
-		Player player = (Player) sender;
 		
+		Player player = (Player) sender;
 		player.sendMessage(this.plugin.getPrefix() + ChatColor.GREEN + "=========="+ ChatColor.GOLD + " Arena " + ChatColor.GREEN +"==========");
+		
+		
 		
 		if (args.length < 1){
 			this.plugin.getLog().info("Argument too small");

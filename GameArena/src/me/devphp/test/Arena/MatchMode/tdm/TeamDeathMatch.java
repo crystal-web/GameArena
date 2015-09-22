@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -24,6 +26,7 @@ import me.devphp.teams.TeamManager;
 import me.devphp.test.GameArena;
 import me.devphp.test.Arena.ArenaEventInterface;
 import me.devphp.test.Arena.ArenaInterface;
+import test.InventorySerializer;
 
 public class TeamDeathMatch implements ArenaInterface {
 	private String chatHeader = ChatColor.GREEN + "===== " + ChatColor.GOLD + "Team Death Match" + ChatColor.GREEN + " =====";
@@ -439,6 +442,130 @@ public class TeamDeathMatch implements ArenaInterface {
 					player.sendMessage(this.plugin.getPrefix() + this.chatHeader);
 					player.sendMessage(this.plugin.getPrefix() + "Game time defined");
 				break;
+				case "kit":
+					String kitName = args[2].toLowerCase().toString();
+					
+					if (args[2].equalsIgnoreCase("starter") || args[2].equalsIgnoreCase("default")){
+						kitName = "default";
+					}
+					
+					this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".inventory", 
+						InventorySerializer.InventoryToString(player.getInventory())
+					);
+					
+					if (player.getInventory().getBoots() != null){
+						int bootsId = player.getInventory().getBoots().getTypeId();
+						short bootsDurability = player.getInventory().getBoots().getDurability();
+						
+						this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".boots.id", bootsId);
+						this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".boots.durability", bootsDurability);
+
+				        Map<Enchantment,Integer> isEnch = player.getInventory().getBoots().getEnchantments();
+				        if (isEnch.size() > 0)
+				        {
+				        	int i = 0;
+				            for (Entry<Enchantment,Integer> ench : isEnch.entrySet())
+				            {
+				            	i++;
+				            	this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".boots.enchantment.line-" + i + ".id", ench.getKey().getId());
+				            	this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".boots.enchantment.line-" + i + ".val", ench.getValue());				            	
+				            }
+				            
+				            try {
+								this.plugin.getConfig().save(this.plugin.getConfigFile());
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+				        }
+					}
+					
+					
+					if (player.getInventory().getLeggings() != null){
+						int leggingsId = player.getInventory().getBoots().getTypeId();
+						short leggingsDurability = player.getInventory().getBoots().getDurability();
+						
+						this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".leggings.id", leggingsId);
+						this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".leggings.durability", leggingsDurability);
+
+				        Map<Enchantment,Integer> isEnch = player.getInventory().getBoots().getEnchantments();
+				        if (isEnch.size() > 0)
+				        {
+				        	int i = 0;
+				            for (Entry<Enchantment,Integer> ench : isEnch.entrySet())
+				            {
+				            	i++;
+				            	this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".leggings.enchantment.line-" + i + ".id", ench.getKey().getId());
+				            	this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".leggings.enchantment.line-" + i + ".val", ench.getValue());				            	
+				            }
+				            
+				            try {
+								this.plugin.getConfig().save(this.plugin.getConfigFile());
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+				        }
+					}	
+
+
+					if (player.getInventory().getChestplate() != null){
+						int chestplateId = player.getInventory().getBoots().getTypeId();
+						short chestplateDurability = player.getInventory().getBoots().getDurability();
+						
+						this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".chestplate.id", chestplateId);
+						this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".chestplate.durability", chestplateDurability);
+
+				        Map<Enchantment,Integer> isEnch = player.getInventory().getBoots().getEnchantments();
+				        if (isEnch.size() > 0)
+				        {
+				        	int i = 0;
+				            for (Entry<Enchantment,Integer> ench : isEnch.entrySet())
+				            {
+				            	i++;
+				            	this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".chestplate.enchantment.line-" + i + ".id", ench.getKey().getId());
+				            	this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".chestplate.enchantment.line-" + i + ".val", ench.getValue());				            	
+				            }
+				        }
+					}	
+					
+
+					if (player.getInventory().getHelmet() != null){
+						int helmetId = player.getInventory().getBoots().getTypeId();
+						short helmetDurability = player.getInventory().getBoots().getDurability();
+						
+						this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".helmet.id", helmetId);
+						this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".helmet.durability", helmetDurability);
+
+				        Map<Enchantment,Integer> isEnch = player.getInventory().getBoots().getEnchantments();
+				        if (isEnch.size() > 0)
+				        {
+				        	int i = 0;
+				            for (Entry<Enchantment,Integer> ench : isEnch.entrySet())
+				            {
+				            	i++;
+				            	this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".helmet.enchantment.line-" + i + ".id", ench.getKey().getId());
+				            	this.plugin.getConfig().set("arena." + this.arena + ".kits." + kitName + ".helmet.enchantment.line-" + i + ".val", ench.getValue());				            	
+				            }
+				            
+				            try {
+								this.plugin.getConfig().save(this.plugin.getConfigFile());
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+				        }
+					}		
+
+					
+					
+					if (args[2].equalsIgnoreCase("starter") || args[2].equalsIgnoreCase("default")){
+						kitName = "starter";
+						player.sendMessage(this.plugin.getPrefix() + "Starter kit has ready.");
+					} else {
+						player.sendMessage(this.plugin.getPrefix() + "Kit has ready");
+					}
+					
+				break;
+				
+				
 				default:
 					this.sendUsage(player);
 				break;

@@ -32,8 +32,7 @@ public class GameArena extends JavaPlugin implements iPlugin {
 		// Liste des arenes
 		this.arenaList				= new HashMap<String, ArenaInterface>();
 		this.playerArena			= new HashMap<String, String>();
-		
-		this.plog					= new PLog(this.getPrefixNoColor(), true);
+		this.plog					= new PLog(this.getPrefixNoColor(), false);
 		
 		/**
 		 * MainCommand ce charge des commandes de base pour les arenes
