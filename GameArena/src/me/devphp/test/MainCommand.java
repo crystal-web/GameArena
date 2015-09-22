@@ -22,7 +22,7 @@ import me.devphp.test.Arena.ArenaInterface;
 import me.devphp.test.Arena.ArenaMaster;
 import me.devphp.test.Arena.MatchMode.MatchMode;
 import me.devphp.test.Arena.MatchMode.tdm.TeamDeathMatch;
-import test.InventorySerializer;
+import me.devphp.utils.InventorySerializer;
 
 /**
  * Cette classe s'occupe de traiter les requêtes de création d'arene et pour les rejoindre

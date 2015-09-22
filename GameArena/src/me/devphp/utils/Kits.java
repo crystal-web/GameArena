@@ -1,4 +1,4 @@
-package me.devphp.test.Arena.MatchMode.tdm;
+package me.devphp.utils;
 
 import java.io.IOException;
 import java.util.Map;
@@ -8,7 +8,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 import me.devphp.iPlugin;
-import test.InventorySerializer;
 
 public class Kits {
 	
@@ -19,6 +18,10 @@ public class Kits {
 	public Kits(iPlugin plugin, String arenaName){
 		this.plugin = plugin;
 		this.arena = arenaName;
+	}
+	
+	public void getKit(Player player, String kitName){
+		
 	}
 	
 	public void saveKit(Player player, String kitName){

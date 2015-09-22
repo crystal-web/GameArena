@@ -26,7 +26,8 @@ import me.devphp.teams.TeamManager;
 import me.devphp.test.GameArena;
 import me.devphp.test.Arena.ArenaEventInterface;
 import me.devphp.test.Arena.ArenaInterface;
-import test.InventorySerializer;
+import me.devphp.utils.InventorySerializer;
+import me.devphp.utils.Kits;
 
 public class TeamDeathMatch implements ArenaInterface {
 	private String chatHeader = ChatColor.GREEN + "===== " + ChatColor.GOLD + "Team Death Match" + ChatColor.GREEN + " =====";
