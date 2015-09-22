@@ -53,7 +53,7 @@ public class TeamDeathMatch implements ArenaInterface {
 	private HashMap<String, PlayerData> playerData;
 	private HashMap<String, PlayerStat> playerStat;
 	
-	private Kits kits;
+	Kits kits;
 
 	public TeamDeathMatch(GameArena plugin, String arena) {
 		this.plugin			= plugin;
@@ -166,6 +166,11 @@ public class TeamDeathMatch implements ArenaInterface {
 		this.getTeamManager().broadcast(this.chatHeader);
 		this.getTeamManager().broadcast("Team Death Match ready. Teleport player on spawn");
 
+		boolean isKitStarter = false;
+		if (this.plugin.getConfig().contains("arena." + this.arena + ".kits.default")){
+			isKitStarter = true;
+		}
+		
 		/**
 		 * Parcourt la liste des équipes
 		 */
@@ -189,6 +194,10 @@ public class TeamDeathMatch implements ArenaInterface {
 							
 							this.clearPlayerStat(currentPlayer);
 							currentPlayer.teleport( this.getTeamSpawn(teamName) );
+							
+							if (isKitStarter){
+								this.kits.getKit(currentPlayer, "default");
+							}
 						}
 					}
 				}
@@ -401,8 +410,6 @@ public class TeamDeathMatch implements ArenaInterface {
 					for(String playerName : this.getTeamManager().getTeam(teamName).getPlayerList().keySet()){
 						player.sendMessage( playerName );
 					}
-					
-					
 				}
 
 			break;
@@ -451,16 +458,16 @@ public class TeamDeathMatch implements ArenaInterface {
 					if (args[2].equalsIgnoreCase("starter") || args[2].equalsIgnoreCase("default")){
 						kitName = "default";
 					}
-							
+						
 					this.kits.saveKit(player, kitName);
 					
+					player.sendMessage(this.plugin.getPrefix() + this.chatHeader);
 					if (args[2].equalsIgnoreCase("starter") || args[2].equalsIgnoreCase("default")){
 						kitName = "starter";
 						player.sendMessage(this.plugin.getPrefix() + "Starter kit has ready.");
 					} else {
 						player.sendMessage(this.plugin.getPrefix() + "Kit has ready");
 					}
-					
 				break;
 				
 				
@@ -474,7 +481,6 @@ public class TeamDeathMatch implements ArenaInterface {
 	@Override
 	public boolean testing() throws Exception {
 		this.plugin.getLog().info("TeamDeathMatch.testing() called");
-
 		if (!this.config.contains("arena." + this.arena + ".team")){
 			throw new Exception("Use " + ChatColor.GOLD + "/arena set team <team name>" + ChatColor.RED + " define team name");
 		}
@@ -509,6 +515,7 @@ public class TeamDeathMatch implements ArenaInterface {
 //		player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena set spawn <team name>" + ChatColor.RESET + " set spawn location (on your position)");
 		player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena set p2w <number of point>" + ChatColor.RESET + " set point needed to wins games");
 		player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena set gametime <seconds>" + ChatColor.RESET + " set maximum game time");
+		player.sendMessage(this.plugin.getPrefix() + "Use " + ChatColor.GOLD + "/arena set kit <kit name>" + ChatColor.RESET + " set kit. Use default or starter for default kit");
 		player.sendMessage(this.plugin.getPrefix() + "Finish the arena with " + ChatColor.GOLD + "/arena test");
 		player.sendMessage(this.plugin.getPrefix() + ChatColor.GOLD + "Happy new game");
 	}

@@ -9,16 +9,19 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.devphp.teams.Team;
 import me.devphp.test.Arena.ArenaEventInterface;
 
 public class TeamDeathMatchEvent implements ArenaEventInterface {
 
 	private TeamDeathMatch arena;
 	private int points2wins;
-
+	private boolean isStarterKitAvailable = false;
+	
 	public TeamDeathMatchEvent(TeamDeathMatch arena){
 		this.arena	= arena;
+		if (this.arena.getPlugin().getConfig().contains("arena." + this.arena + ".kits.default")){
+			this.isStarterKitAvailable = true;
+		}
 	}
 	
 	@Override
@@ -102,6 +105,10 @@ public class TeamDeathMatchEvent implements ArenaEventInterface {
 				if (teamLocation == null){
 					this.arena.getPlugin().getLog().info("TeamDeathMatchEvent.onPlayerRespawn teamLocation == null");
 				} else {
+					if (this.isStarterKitAvailable){
+						this.arena.getPlugin().getLog().info("TeamDeathMatchEvent.onPlayerRespawn kit default is availlable");
+						this.arena.kits.getKit(player, "default");
+					}
 					new BukkitRunnable() {
 						public void run() {
 							try {
@@ -110,7 +117,7 @@ public class TeamDeathMatchEvent implements ArenaEventInterface {
 								e.printStackTrace();
 							}
 						}
-					}.runTaskLater(this.arena.getPlugin(), 40L);
+					}.runTaskLater(this.arena.getPlugin(), 10L);
 				}
 			}
 		} catch (Exception e1) {
