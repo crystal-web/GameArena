@@ -1,7 +1,7 @@
 name: GameArena
 main: me.devphp.test.GameArena
 authors: [Devphp]
-version: 1.0.2.1
+version: 1.0.2.2
 commands:
   arena:
     description: GameArena SimpleGame Arena 

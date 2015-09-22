@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
 public class PlayerData {
@@ -16,6 +18,10 @@ public class PlayerData {
     private GameMode mode  = null;
     private Location loc = null;
     private Collection<PotionEffect> potions;
+
+	private ItemStack[] inventory;
+
+	private ItemStack[] armor;
     
     public PlayerData(Player player) {
         this.player		= player;
@@ -26,6 +32,8 @@ public class PlayerData {
         this.exp		= player.getExp();
         this.loc		= player.getLocation();
         this.potions	= player.getActivePotionEffects();
+        this.inventory	= player.getInventory().getContents();
+        this.armor		= player.getInventory().getArmorContents();
     }
     
     public void restore(){
@@ -35,7 +43,9 @@ public class PlayerData {
         player.setLevel(this.level);
         player.setExp(this.exp);
         player.teleport(this.loc);
-
+		player.getInventory().setContents( this.inventory);
+		player.getInventory().setArmorContents(this.armor);
+		
 		for (PotionEffect effect : this.potions){
 			player.addPotionEffect(effect);
 		}
