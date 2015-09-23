@@ -1,7 +1,14 @@
 package me.devphp.GameArena.Arena.MatchMode.tdm;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -9,6 +16,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.devphp.GameArena.Arena.ArenaEventInterface;
@@ -24,6 +35,46 @@ public class TeamDeathMatchEvent implements ArenaEventInterface {
 		if (this.arena.getPlugin().getConfig().contains("arena." + this.arena + ".kits.default")){
 			this.isStarterKitAvailable = true;
 		}
+	}
+	
+	
+	public void inventoryKit(Player player){
+	    Inventory inventory = Bukkit.createInventory(player, 9, "Select a kit");
+	    
+	    /** Book test
+		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+		BookMeta meta = (BookMeta) book.getItemMeta();
+		meta.setTitle("Règle du serveur");
+		meta.setAuthor("DevPHP");
+		List<String> pages = new ArrayList<String>();
+		pages.add("Blabla");
+		pages.add("Blabla");
+		
+		meta.setPages(pages);
+		book.setItemMeta(meta);
+		inventory.setItem(0, book);
+		//*/
+	    
+	    // TODO en cours
+	    Set<String> kitList = this.arena.kits.getList();
+	    if (kitList == null){return;}
+	    
+	    int i = 0;
+	    for (String kitName : kitList){
+	    	if (!kitName.equalsIgnoreCase("default")){
+	    		if (kitList.size() == 1){
+	    			return;
+	    		}
+	    	}
+	    	
+	    	ItemStack block = new ItemStack(Material.WOOL, 1);
+	    	block.setType(Material.WOOL);
+	    }
+	    
+		ItemStack home = new ItemStack(Material.DARK_OAK_DOOR);
+		inventory.setItem(1, home );
+	    
+	    player.openInventory(inventory);
 	}
 	
 	@Override
@@ -137,6 +188,9 @@ public class TeamDeathMatchEvent implements ArenaEventInterface {
 						this.arena.getPlugin().getLog().info("TeamDeathMatchEvent.onPlayerRespawn kit default is availlable");
 						this.arena.kits.getKit(player, "default");
 					}
+					
+					
+					
 					new BukkitRunnable() {
 						public void run() {
 							try {
@@ -146,6 +200,9 @@ public class TeamDeathMatchEvent implements ArenaEventInterface {
 							}
 						}
 					}.runTaskLater(this.arena.getPlugin(), 10L);
+					
+					
+					
 				}
 			}
 		} catch (Exception e1) {

@@ -3,6 +3,7 @@ package me.devphp.utils;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -203,5 +204,12 @@ public class Kits {
 	            }
 	        }
 		}
+	}
+
+	public Set<String> getList() {
+		if (this.plugin.getConfig().contains("arena." + this.arena + ".kits")){
+			return this.plugin.getConfig().getConfigurationSection( "arena." + this.arena + ".kits" ).getKeys(false);
+		}		
+		return null;
 	}
 }
