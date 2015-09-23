@@ -5,20 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class Team {
 	private String teamName;
-	private ArrayList<String> joinedPlayers;
 	public Logger log = Logger.getLogger("Minecraft");
 	private Map<String, Player> joinedPlayer;
 	
 	public Team(String teamName)
     {
         this.teamName = teamName;
-        this.joinedPlayers = new ArrayList<String>();
         this.joinedPlayer = new HashMap<String, Player>();
     }
 	
@@ -28,13 +25,11 @@ public class Team {
 	
     public int getTeamCount()
     {
-        //return this.joinedPlayers.size();
     	return this.joinedPlayer.size();
     }
     
     public Map<String, Player> getPlayerList()
     {
-    	//return joinedPlayers;
     	return this.joinedPlayer;
     }
         

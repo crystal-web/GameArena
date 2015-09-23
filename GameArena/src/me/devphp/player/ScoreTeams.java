@@ -2,8 +2,6 @@ package me.devphp.player;
 
 import java.util.HashMap;
 
-import me.devphp.teams.TeamManager;
-
 public class ScoreTeams {
 	private HashMap<String, Integer> teamPoint;
 	

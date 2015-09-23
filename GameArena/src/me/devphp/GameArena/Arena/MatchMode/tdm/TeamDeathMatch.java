@@ -6,18 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import me.devphp.GameArena.GameArena;
 import me.devphp.GameArena.Arena.ArenaEventInterface;
 import me.devphp.GameArena.Arena.ArenaInterface;
@@ -26,7 +21,6 @@ import me.devphp.player.PlayerStat;
 import me.devphp.player.ScoreTeams;
 import me.devphp.teams.Team;
 import me.devphp.teams.TeamManager;
-import me.devphp.utils.InventorySerializer;
 import me.devphp.utils.Kits;
 
 public class TeamDeathMatch implements ArenaInterface {

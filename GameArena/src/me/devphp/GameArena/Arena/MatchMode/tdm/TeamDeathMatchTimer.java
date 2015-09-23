@@ -1,6 +1,5 @@
 package me.devphp.GameArena.Arena.MatchMode.tdm;
 
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
